@@ -1,3 +1,6 @@
+## Seed
+
+set.seed(25.8069758011)
 
 ## Set up
 
