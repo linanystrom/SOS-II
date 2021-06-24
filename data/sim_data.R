@@ -90,6 +90,28 @@ sim_style_long$time <- case_when(
   sim_style_long$time == "stage_6" ~ 6
 )
 
+##Dummy code condition
+
+sim_style_long$cond_direct <- case_when(
+  sim_style_long$style == "direct" ~ 1,
+  sim_style_long$style == "standard" ~ 0,
+  sim_style_long$style == "reinforcement" ~ 0
+)
+
+sim_style_long$cond_standard <- case_when(
+  sim_style_long$style == "direct" ~ 0,
+  sim_style_long$style == "standard" ~ 1,
+  sim_style_long$style == "reinforcement" ~ 0
+)
+
+sim_style_long$cond_reinforcement <- case_when(
+  sim_style_long$style == "direct" ~ 0,
+  sim_style_long$style == "standard" ~ 0,
+  sim_style_long$style == "reinforcement" ~ 1
+)
+
+## Factor condition
+
 sim_style_long$style <- factor(sim_style_long$style, levels = c("direct", "standard", "reinforcement"))
 
 

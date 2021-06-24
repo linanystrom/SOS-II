@@ -41,9 +41,16 @@ The study will assess the effectiveness of the SoS approach in longer interrogat
 
 Example: If taste affects preference, then mean preference indices will be higher with higher concentrations of sugar. -->
 
-Our main research questions concern the comparison of the two SoS conditions to the direct questioning condition, with regard to sources’ disclosure of critical information. 
-We predict that the SoS techniques will outperform the Direct approach at obtaining new information from sources and that the SoS-Reinforcement technique will outperform the SoS-Standard technique.
+Our aim is to assess the SoS-approach (Luke &Granhag, 2020) in longer interviews and to test a new variation of the technique that we call SoS-Reinforcement.
 
+We will compare this new variation to the version of the SoS-approach that Luke and Granhag (2020) previously found most effective (SoS-Standard). We will also assess if SoS-Standard remains effective in comparison to Direct questioning. 
+Our main research questions concern the comparison between the two SoS-conditions regarding sources’ disclosure of critical information, as well as assessing if SoS-Standard holds up as more effective than direct questioning in longer interviews. 
+
+The SoS-Standard technique and the SoS-Reinforcement technique are identical for the first three themes of the interview. Therefore, participants in the SoS-Standard and SoS-Reinforcement conditions should not disclose significantly different amounts of information during the first three themes of the interview. 
+
+We predict that participants in the Reinforcement condition will disclose more information during the last three themes of the interview (following the Reinforcement stage) in comparison to participants in the Standard condition. Though we expect to see a decrease in disclosed information for the critical phases of the interview for all conditions, we expect the drop in disclosed information to be less severe in the SoS-Reinforcement condition than in the SoS-Standard condition.
+
+(Exploratory) We want to explore if the Reinforcement stage has an instant effect on participants’ disclosure of crime relevant information. Therefore we will test whether participants in the SoS-Reinforcement condition disclose more information during the fourth theme of the interview than participants in the SoS-Standard condition.
 
 
 # Design Plan
@@ -157,6 +164,7 @@ Observational studies and meta-analyses will include only measured variables. As
 Example: The single outcome variable will be the perceived tastiness of the single brownie each participant will eat. We will measure this by asking participants ‘How much did you enjoy eating the brownie’ (on a scale of 1-7, 1 being 'not at all', 7 being 'a great deal') and 'How good did the brownie taste' (on a scale of 1-7, 1 being 'very bad', 7 being 'very good'). -->
 
 We will measure participants’ disclosure of (truthful) information in each phase of the interrogation (i.e., related to each discrete activity they performed). Measuring disclosure across multiple time points will permit us to assess potentially different “trajectories” an interrogation can take as a function of the different techniques.
+
 For each phase of each mock crime, we have identified five details with increasing specificity and coded whether the participants' statement to the interviewer reveal those truthful details. The revelation of each detail necessarily implied revelation of less specific details (i.e., admitting to the most specific detail entailed admitting to all the less specific details), thus forming a 0 to 5 score for each phase of each mock crime. See coding scheme (link). 
 
 We will assess participants’ perception of how successful they were at convincing the interviewer they were innocent using self-reported endorsement of four statements about their performance in the interview. We will also assess participants’ perceptions of the quality of the interaction and the interviewer using their self-reported endorsement of lists of positive and negative adjectives (6 for the interaction, i.e., smooth, awkward, comfortable, difficult, open, and pleasant; and 6 for the interviewer, i.e., friendly, pressing, aggressive, sympathetic, interested, and harsh).
@@ -189,7 +197,7 @@ This is perhaps the most important and most complicated question within the prer
 
 Example:  We will use a one-way between subjects ANOVA to analyze our results. The manipulated, categorical independent variable is 'sugar' whereas the dependent variable is our taste index. -->
 
-Enter here <!--Information disclosure data will be analyzed with a linear mixed effects modeling approach, which will permit analysis of the patterns of information disclosure over the phases of the interview. --!>
+We will assess our predictions by fitting a linear mixed effects model with fixed effects for time, time after treatment and immediate treatment, interview condition (treatment contrasts with SoS-Standard as reference group), and their interaction term, as well as random effects (intercepts) for each participant(nested in mock crime orders),crime event (nested in mock crime orders) and interviewer. 
 
 
 ## Transformations
