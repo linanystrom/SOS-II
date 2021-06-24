@@ -1,6 +1,6 @@
 ## Packages
 
-packages <- c("gtools", "readr", "tibble", "dplyr")
+packages <- c("gtools", "readr", "tibble", "dplyr", "data.table")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -23,7 +23,7 @@ stages    <- c("A","B")                               #stages
 
 permutations <- permutations(n = nr_stages, r = nr_stages, v = stages)
 
-colnames(permutations) <- c("stage_1","stage_2")
+colnames(permutations) <- c("chunk_1","chunk_2")
 
 permutations <- data.frame(permutations)
 
@@ -31,15 +31,15 @@ permutations <- data.frame(permutations)
 
 permutations$sequence <-
   paste(
-    permutations$stage_1,
-    permutations$stage_2
+    permutations$chunk_1,
+    permutations$chunk_2
   )
 
 ## Calculating number of possible permutations
 
 poss_permutations <- length(permutations$sequence)
 
-## Multipling possible permutations with number of mock crimes
+## Multiplying possible permutations with number of mock crimes
 
 mc_x_poss_permutations <- poss_permutations*nr_mcs
 

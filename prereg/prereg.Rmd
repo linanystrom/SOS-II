@@ -76,7 +76,7 @@ We will have a between subjects design with 3 interview conditions; Direct, SoS-
 
 Example: We will use block randomization, where each participant will be randomly assigned to one of the four equally sized, predetermined blocks. The random number list used to create these four blocks will be created using the web applications available at https://random.org. -->
 
-Participants will be randomized to one of our three interview conditions. See list of participant allocation here (add link) and the code used to generate the list here (add link).
+Participants will be randomized to one of our three interview conditions. See list of participant condition allocation here (add link) and the code used to generate the list here (add link).
 
 
 # Sampling Plan
@@ -143,7 +143,7 @@ Example: We manipulated the percentage of sugar by mass added to brownies. The f
 
 We will use a three-group experimental design, in which participants serving as mock intelligence sources will be questioned with one of three interrogation techniques (i.e., Direct questioning, SoS-Standard, and SoS-Reinforcement).
  
-In the Reinforcement condition, the interrogator will pause after covering several topics to summarize the source’s statement and give him or her the opportunity to offer clarifications, corrections, or modifications. During this summary, the interrogator will place special emphasis on the parts of the statement that are consistent or inconsistent with the interrogator’s knowledge, without judgment and without accusing the source of lying. Thus, the source will be given an additional signal that becoming forthcoming and consistent with the evidence may be a productive strategy (and that being withholding and inconsistent is potentially damaging). We will compare this new variation to the version of the approach that Luke and Granhag (2020) found was effective (SoS-Standard) and to a technique in which inconsistencies are not challenged (Direct).
+In the Reinforcement condition, the interrogator will pause after covering several topics to summarize the source’s statement and give him or her the opportunity to offer clarifications, corrections, or modifications. During this summary, the interrogator will place special emphasis on the parts of the statement that are consistent or inconsistent with the interrogator’s knowledge, without judgment and without accusing the source of lying. Thus, the source will be given an additional signal that becoming forthcoming and consistent with the evidence may be a productive strategy (and that being withholding and inconsistent is potentially damaging). We will compare this new variation to the version of the approach that Luke and Granhag (2020) found most effective (SoS-Standard) and to a technique in which inconsistencies are not challenged (Direct).
 
 The techniques vary in the manner in which the interviewer responds to statement-evidence inconsistencies. In the Direct condition the interviewer relies on direct questioning and will not challenge the suspects on any statement-evidence inconsistencies. In both the SoS-Standard and SoS-Reinforcement conditions the interviewer challenges inconsistencies without delay. 
 
@@ -157,7 +157,8 @@ Observational studies and meta-analyses will include only measured variables. As
 Example: The single outcome variable will be the perceived tastiness of the single brownie each participant will eat. We will measure this by asking participants ‘How much did you enjoy eating the brownie’ (on a scale of 1-7, 1 being 'not at all', 7 being 'a great deal') and 'How good did the brownie taste' (on a scale of 1-7, 1 being 'very bad', 7 being 'very good'). -->
 
 We will measure participants’ disclosure of (truthful) information in each phase of the interrogation (i.e., related to each discrete activity they performed). Measuring disclosure across multiple time points will permit us to assess potentially different “trajectories” an interrogation can take as a function of the different techniques.
-For each phase of each mock crime, we have identified five details with increasing specificity and coded whether the participants' statement to the interviewer reveal those truthful details. The revelation of each detail necessarily implied revelation of less specific details (i.e., admitting to the most specific detail entailed admitting to all the less specific details), thus forming a 0 to 5 score for each phase of each mock crime. See coding scheme. 
+For each phase of each mock crime, we have identified five details with increasing specificity and coded whether the participants' statement to the interviewer reveal those truthful details. The revelation of each detail necessarily implied revelation of less specific details (i.e., admitting to the most specific detail entailed admitting to all the less specific details), thus forming a 0 to 5 score for each phase of each mock crime. See coding scheme (link). 
+
 We will assess participants’ perception of how successful they were at convincing the interviewer they were innocent using self-reported endorsement of four statements about their performance in the interview. We will also assess participants’ perceptions of the quality of the interaction and the interviewer using their self-reported endorsement of lists of positive and negative adjectives (6 for the interaction, i.e., smooth, awkward, comfortable, difficult, open, and pleasant; and 6 for the interviewer, i.e., friendly, pressing, aggressive, sympathetic, interested, and harsh).
 
 
