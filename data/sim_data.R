@@ -10,10 +10,6 @@ stages        <- c(1:n_stage)
 range_details <- c(0:5)         #details revealed
 interviewer   <- c("M", "P", "K")
 
-#MC2A_file     <- read.csv("C:/Users/xnystl/Documents/R projects/SOS-II/data/qualtrics/MC2A.csv")
-#MC2B_file     <- read.csv("C:/Users/xnystl/Documents/R projects/SOS-II/data/qualtrics/MC2B.csv")
-#files         <- rbind(MC2A_file, MC2B_file)
-
 ## Set up data frame
 
 simulation <- 
@@ -98,6 +94,7 @@ sim_style_long$cond_direct <- case_when(
   sim_style_long$style == "reinforcement" ~ 0
 )
 
+##Remove?
 sim_style_long$cond_standard <- case_when(
   sim_style_long$style == "direct" ~ 0,
   sim_style_long$style == "standard" ~ 1,
@@ -113,6 +110,12 @@ sim_style_long$cond_reinforcement <- case_when(
 ## Factor condition
 
 sim_style_long$style <- factor(sim_style_long$style, levels = c("direct", "standard", "reinforcement"))
+
+## Set standard as reference group
+
+sim_style_long <- within(sim_style_long, style <- relevel(style, ref = "standard"))
+
+##Testing
 
 
 sim_style_long %>% 
@@ -180,7 +183,7 @@ ggplot(sim_style_long,
     x = "Phase"
   ) +
   scale_x_discrete(
-    labels = c("1", "2", "3","4","5","6")
+    labels = c("1", "2", "3","4","5","6") ## nope
   ) +
   coord_cartesian(
     ylim = c(0, 5)
@@ -188,8 +191,8 @@ ggplot(sim_style_long,
   theme_classic()
 
 
-## 
+## Why am I doing this?
 
-info_model_main <- lmer(detail ~ time + style + (1|crime_order/ID) + (1|interviewer), data = sim_style_long, REML = FALSE)
+info_model_main <- lmer(detail ~ time  + treatment + after + style + time*style + treatment*style + after*style + (1|crime_order/ID) + (1|interviewer), data = sim_style_long, REML = FALSE)
 
 summary(info_model_main)

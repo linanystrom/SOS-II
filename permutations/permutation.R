@@ -1,6 +1,6 @@
 ## Packages
 
-packages <- c("gtools", "readr", "tibble", "dplyr", "data.table")
+packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr")
 
 lapply(packages, library, character.only = TRUE)
 
