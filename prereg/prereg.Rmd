@@ -46,11 +46,21 @@ We will also assess and compare participants' experiences being interrogated usi
 
 Example: If taste affects preference, then mean preference indices will be higher with higher concentrations of sugar. -->
 
+#Information disclosure
+
 The SoS-Standard technique and the SoS-Reinforcement technique are identical for the first three themes of the interview. Therefore, participants in the SoS-Standard and SoS-Reinforcement conditions should not disclose significantly different amounts of information during the first three themes of the interview. 
 
 We predict that participants in the SoS-Reinforcement condition will disclose more information during the last three themes of the interview (following the Reinforcement stage) in comparison to participants in the SoS-Standard condition. Though we expect to see a decrease in disclosed information for the critical phases of the interview for all conditions, we expect the drop in disclosed information to be less severe in the SoS-Reinforcement condition than in the SoS-Standard condition.
 
 (Exploratory) We want to explore if the Reinforcement stage has an instant effect on participants’ disclosure of crime relevant information. We will test whether participants in the SoS-Reinforcement condition disclose more information immediately after the Reinforcement-stage (theme four) than participants in the SoS-Standard condition.
+
+#Performance
+
+We expect that (1) the SoS conditions will not assess their performance more poorly than the Direct condition, and (2) all conditions would on average assess their performance as better than the midpoint of the scale.
+
+#Interaction quality
+
+We expected that (1) the SoS conditions would not assess the interaction or the interviewer more poorly than the direct questioning condition, and (2) all conditions would on average assess the interaction and the interviewer as more positive than the negative endpoint of the scale.
 
 
 # Design Plan
@@ -67,6 +77,7 @@ We predict that participants in the SoS-Reinforcement condition will disclose mo
 
 For studies that involve human subjects, they will not know the treatment group to which they have been assigned.
 
+Experimenters and interviewers will not be aware of the study's hypotheses. 
 
 ## Study design
 <!-- Describe your study design. Examples include two-group, factorial, randomized block, and repeated measures. Is it a between (unpaired), within-subject (paired), or mixed design? Describe any counterbalancing required. Typical study designs for observation studies include cohort, cross sectional, and case-control studies.
@@ -140,7 +151,7 @@ You may specify a stopping rule based on p-values only in the specific case of s
 
 Example: We will post participant sign-up slots by week on the preceding Friday night, with 20 spots posted per week. We will post 20 new slots each week if, on that Friday night, we are below 320 participants. -->
 
-We will post participant sign-up slots continuously until we have collected 300 complete interviews. The amount of available sign-up slots will vary with experimenter and interviewer availability. 
+We will post participant sign-up slots continuously until we have collected 300 usable interviews. The amount of available sign-up slots will vary with experimenter and interviewer availability. 
 
 
 
@@ -183,7 +194,7 @@ If you are using multiple pieces of data to construct a single variable, how wil
 
 Example: We will take the mean of the two questions above to create a single measure of 'brownie enjoyment.'  -->
 
-We will create three composite measures. One for the items regarding participants' self-assessment of performance, one for interaction quality and lastly one for interviewer quality (some items reverse coded so that higher values indicate more positive assessments)(see code link).
+We will create three composite measures. One for the items regarding participants' self-assessment of performance, one for interaction quality and lastly one for interviewer quality (some items reverse coded so that higher values indicate more positive assessments)(see code link). All three composites will be created by calculating the mean of the respective combined items.
 
 
 # Analysis Plan
@@ -227,8 +238,8 @@ Enter here
 
 Example: No checks will be performed to determine eligibility for inclusion besides verification that each subject answered each of the three tastiness indices. Outliers will be included in the analysis. -->
 
-Enter your response here.
-
+Participants who fail to adhere to instructions regarding the interview (e.g. does not attempt to convince the interviewer that they are innocent) will be excluded from analysis. 
+Data will be excluded if two people on the research team agree that it should be excluded without having looked at the data. 
 
 ## Missing data
 <!-- How will you deal with incomplete or missing data? Any relevant explanation is acceptable. As a final reminder, remember that the final analysis must follow the specified plan, and deviations must be either strongly justified or included as a separate, exploratory analysis.
