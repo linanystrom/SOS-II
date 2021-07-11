@@ -117,7 +117,6 @@ sim_style_long <- within(sim_style_long, style <- relevel(style, ref = "standard
 
 ##Testing
 
-
 sim_style_long %>% 
   group_by(style, time) %>% 
   summarise(
@@ -191,8 +190,11 @@ ggplot(sim_style_long,
   theme_classic()
 
 
-## Why am I doing this?
+# Why am I doing this?
 
 info_model_main <- lmer(detail ~ time  + treatment + after + style + time*style + treatment*style + after*style + (1|crime_order/ID) + (1|interviewer), data = sim_style_long, REML = FALSE)
 
 summary(info_model_main)
+
+
+

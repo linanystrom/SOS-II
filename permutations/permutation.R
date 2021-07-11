@@ -21,23 +21,23 @@ stages    <- c("A","B")                               #stages
 
 ## Generate permutations for stages
 
-permutations <- permutations(n = nr_stages, r = nr_stages, v = stages)
+perm_list <- permutations(n = nr_stages, r = nr_stages, v = stages)
 
-colnames(permutations) <- c("chunk_1","chunk_2")
+colnames(perm_list) <- c("chunk_1","chunk_2")
 
-permutations <- data.frame(permutations)
+perm_list <- data.frame(perm_list)
 
 ## Adding column for sequence of stages
 
-permutations$sequence <-
+perm_list$sequence <-
   paste(
-    permutations$chunk_1,
-    permutations$chunk_2
+    perm_list$chunk_1,
+    perm_list$chunk_2
   )
 
 ## Calculating number of possible permutations
 
-poss_permutations <- length(permutations$sequence)
+poss_permutations <- length(perm_list$sequence)
 
 ## Multiplying possible permutations with number of mock crimes
 
@@ -45,7 +45,7 @@ mc_x_poss_permutations <- poss_permutations*nr_mcs
 
 ## Creating data frame with all possible permutations * number of mock crimes
 
-MCpermutations <- do.call("rbind", replicate(nr_mcs, permutations, simplify = FALSE))
+MCpermutations <- do.call("rbind", replicate(nr_mcs, perm_list, simplify = FALSE))
 
 ## Assigning mock crime to permitations
 
