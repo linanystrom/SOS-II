@@ -1,4 +1,7 @@
-library("readxl", "ggplot2")
+
+packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4")
+
+lapply(packages, library, character.only = TRUE)
 
 ## Load qualtrics data
 MC2B_file     <- read_xlsx("./data/qualtrics/help.xlsx")
@@ -79,6 +82,9 @@ interview_statements_3 = case_when(
 ),
 self_assessment = (interview_statements_1 + interview_statements_2 + interview_statements_3 + interview_statements_4)/4,
 )
+
+# Add crime_order
+sos$crime_order <- paste(sos$mock_crime, sos$sequence)
 
 #Transform data to long format
 
@@ -203,7 +209,7 @@ info_model_main <- lmer(detail ~ time  + treatment + after + style + time*style 
 summary(info_model_main)
 
 
-# Self-assessment of 
+# Self-assessment of performance
 
 #Descriptives
 
