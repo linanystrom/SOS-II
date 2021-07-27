@@ -88,57 +88,46 @@ sos$crime_order <- paste(sos$mock_crime, sos$sequence)
 
 #Transform data to long format
 
-sos_long <- sos %>% pivot_longer(6:11, names_to = "time", values_to = "detail")
+sos_long <- sos %>% pivot_longer(cols = starts_with("stage"), names_to = "time", values_to = "detail")
 
 #Code time variables for interrupted time series regression
 
-sos_long$after <- case_when(
-  sos_long$time == "stage_1" ~ 0,
-  sos_long$time == "stage_2" ~ 0,
-  sos_long$time == "stage_3" ~ 0,
-  sos_long$time == "stage_4" ~ 1,
-  sos_long$time == "stage_5" ~ 2,
-  sos_long$time == "stage_6" ~ 3
-)
+sos_long <-sos_long %>% 
+  mutate(
+after = case_when(
+  time == "stage_1" ~ 0,
+  time == "stage_2" ~ 0,
+  time == "stage_3" ~ 0,
+  time == "stage_4" ~ 1,
+  time == "stage_5" ~ 2,
+  time == "stage_6" ~ 3
+),
 
-sos_long$treatment <- case_when(
+treatment = case_when(
   sos_long$time == "stage_1" ~ 0,
   sos_long$time == "stage_2" ~ 0,
   sos_long$time == "stage_3" ~ 0,
   sos_long$time == "stage_4" ~ 1,
   sos_long$time == "stage_5" ~ 1,
   sos_long$time == "stage_6" ~ 1
-)
+),
 
-sos_long$time <- case_when(
+time = case_when(
   sos_long$time == "stage_1" ~ 1,
   sos_long$time == "stage_2" ~ 2,
   sos_long$time == "stage_3" ~ 3,
   sos_long$time == "stage_4" ~ 4,
   sos_long$time == "stage_5" ~ 5,
   sos_long$time == "stage_6" ~ 6
-)
+))
 
 #Factor condition
 
-sos_long$style <- factor(sos_long$style, levels = c("direct", "standard", "reinforcement"))
-
-#Set standard as reference group
-
-sos_long <- within(sos_long, style <- relevel(style, ref = "standard"))
+sos_long$style <- factor(sos_long$style, levels = c("standard", "direct", "reinforcement"))
 
 #Hypothesis testing - Information disclosure
 
 #Descriptives
-
-sos_long %>% 
-  group_by(style, time) %>% 
-  summarise(
-    Mean = mean(detail, na.rm = TRUE),
-    SD = sd(detail, na.rm = TRUE),
-    Median = median(detail, na.rm = TRUE)
-  ) %>% 
-  knitr::kable(digits = 2, align = "l")
 
 info_desc <- sos_long %>% 
   group_by(style, time) %>% 
@@ -149,7 +138,9 @@ info_desc <- sos_long %>%
     SE = SD/sqrt(n()),
     Upper = Mean + (1.96*SE),
     Lower = Mean - (1.96*SE)
-  )
+  ) %>% 
+  knitr::kable(digits = 2, align = "l")
+
 
 #Plot information disclosure
 

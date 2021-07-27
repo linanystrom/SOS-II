@@ -55,11 +55,13 @@ We predict that participants in the SoS-Reinforcement condition will disclose mo
 
 ###Performance
 
-We expect that (1) the SoS conditions will not assess their performance more poorly than the Direct condition, and (2) all conditions would on average assess their performance as better than the midpoint of the scale.
+(Exploratory) We will test whether the SoS conditions assess their performance more poorly than the Direct condition.
+
+(Exploratory) We will run an exploratory analysis to assess if all conditions on average assess their performance as better than the midpoint of the scale.
 
 ###Interaction quality
 
-We expected that (1) the SoS conditions would not assess the interaction or the interviewer more poorly than the direct questioning condition, and (2) all conditions would on average assess the interaction and the interviewer as more positive than the negative endpoint of the scale.
+We expect that (1) the SoS conditions will not assess the interaction or the interviewer more poorly than the direct questioning condition, and (2) all conditions will on average assess the interaction and the interviewer as more positive than the negative endpoint of the scale.
 
 
 # Design Plan

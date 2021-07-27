@@ -109,7 +109,7 @@ sim_style_long$cond_reinforcement <- case_when(
 
 ## Factor condition
 
-sim_style_long$style <- factor(sim_style_long$style, levels = c("direct", "standard", "reinforcement"))
+sim_style_long$style <- factor(sim_style_long$style, levels = c("standard", "direct", "reinforcement"))
 
 ## Set standard as reference group
 
