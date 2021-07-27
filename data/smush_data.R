@@ -16,7 +16,7 @@ data <- read_xlsx("./data/coding.xlsx")
 
 df <- merge(data, MC2B_file, by = "ResponseId")
 
-## Reverse code interview quality, interviewer quality and self-assesment items. Create interview quality, interviewer quality and self-assesment composite. 
+## Reverse code interview quality, interviewer quality and self-assessment items. Create interview quality, interviewer quality and self-assessment composite. 
 
 #Interview quality
 
@@ -64,24 +64,24 @@ sos <- df %>%
     ),
     interviewer_qual = (interviewer_adj_1 + interviewer_adj_2_R + interviewer_adj_3_R + interviewer_adj_4 + interviewer_adj_5 + interviewer_adj_6_R)/6,
 
-# Self-assesment of performance
+# Self-assessment of performance
 
-interview_statements_2 = case_when(
-  interview_statements_2 == 5 ~ 1,
-  interview_statements_2 == 4 ~ 2,
-  interview_statements_2 == 3 ~ 3,
-  interview_statements_2 == 2 ~ 4,
-  interview_statements_2 == 1 ~ 5
-),
-interview_statements_3 = case_when(
-  interview_statements_3 == 5 ~ 1,
-  interview_statements_3 == 4 ~ 2,
-  interview_statements_3 == 3 ~ 3,
-  interview_statements_3 == 2 ~ 4,
-  interview_statements_3 == 1 ~ 5
-),
-self_assessment = (interview_statements_1 + interview_statements_2 + interview_statements_3 + interview_statements_4)/4,
-)
+    interview_statements_2 = case_when(
+      interview_statements_2 == 5 ~ 1,
+      interview_statements_2 == 4 ~ 2,
+      interview_statements_2 == 3 ~ 3,
+      interview_statements_2 == 2 ~ 4,
+      interview_statements_2 == 1 ~ 5
+    ),
+    interview_statements_3 = case_when(
+      interview_statements_3 == 5 ~ 1,
+      interview_statements_3 == 4 ~ 2,
+      interview_statements_3 == 3 ~ 3,
+      interview_statements_3 == 2 ~ 4,
+      interview_statements_3 == 1 ~ 5
+    ),
+    self_assessment = (interview_statements_1 + interview_statements_2 + interview_statements_3 + interview_statements_4)/4
+    )
 
 # Add crime_order
 sos$crime_order <- paste(sos$mock_crime, sos$sequence)

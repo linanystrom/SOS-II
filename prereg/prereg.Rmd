@@ -33,7 +33,7 @@ Example: Effect of sugar on brownie tastiness. -->
 
 Example: Though there is strong evidence to suggest that sugar affects taste preferences, the effect has never been demonstrated in brownies. Therefore, we will measure taste preference for four different levels of sugar concentration in a standard brownie recipe to determine if the effect exists in this pastry. -->
 
-Our aim is to assess the SoS-approach (Luke &Granhag, 2020) in longer interviews and to test a new variation of the technique that we call SoS-Reinforcement.
+Our aim is to assess the SoS-approach (Luke & Granhag, 2020) in longer interviews and to test a new variation of the technique that we call SoS-Reinforcement.
 
 Our main research questions concern the comparison between the two SoS-conditions regarding sources’ disclosure of critical information, as well as assessing if SoS-Standard holds up as more effective than direct questioning in longer interviews. 
 
