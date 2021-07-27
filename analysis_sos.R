@@ -1,6 +1,6 @@
 # Basic setup --------------------------------------------------
 
-packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4")
+packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4", "TOSTER")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -27,7 +27,7 @@ info_desc <- sos_long %>%
   knitr::kable(digits = 2, align = "l")
 
 
-## Plot information disclosure
+## Plot information disclosure (ERROR PLEASE HELP!)
 
 info_plot <- ggplot(sos_long,
        aes(
@@ -122,11 +122,11 @@ perf_plot <- ggplot(sos,
 
 ## Comparison of each condition
 
-t_self_DS <- t.test(self_assessment ~ style, data = filter(sos, style == "direct" | condition == "standard"))
+t_self_DS <- t.test(self_assessment ~ style, data = filter(sos, style == "direct" | style == "standard"))
 
-t_self_DR <-t.test(self_assessment ~ style, data = filter(sos, style == "direct" | condition == "reinforcement"))
+t_self_DR <-t.test(self_assessment ~ style, data = filter(sos, style == "direct" | style == "reinforcement"))
 
-t_self_RS <-t.test(self_assessment ~ style, data = filter(sos, style == "reinforcement" | condition == "standard"))
+t_self_RS <-t.test(self_assessment ~ style, data = filter(sos, style == "reinforcement" | style == "standard"))
 
 ## Comparison to the midpoint
 
@@ -327,8 +327,8 @@ tost_interviewer_RS <- TOSTtwo(m1 = standard_mean_3, m2 = reinforcement_mean_3, 
 
 ## Comparison to the negative endpoint
 
-t_interviewer_neg_D <- t.test(filter(sos, condition == "direct")$interviewer_qual, mu = 1)
+t_interviewer_neg_D <- t.test(filter(sos, style == "direct")$interviewer_qual, mu = 1)
 
-t_interviewer_neg_S <- t.test(filter(sos, condition == "standard")$interviewer_qual, mu = 1)
+t_interviewer_neg_S <- t.test(filter(sos, style == "standard")$interviewer_qual, mu = 1)
 
-t_interviewer_neg_R <- t.test(filter(sos, condition == "reinforcement")$interviewer_qual, mu = 1)
+t_interviewer_neg_R <- t.test(filter(sos, style == "reinforcement")$interviewer_qual, mu = 1)

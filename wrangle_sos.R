@@ -8,17 +8,29 @@ lapply(packages, library, character.only = TRUE)
 
 ## Load Qualtrics data
 
-MC2B_file     <- read_xlsx("./data/qualtrics/help.xlsx")
+### Exchange for real data when available
 
-## files <- rbind(MC2A_file, MC2B_file)
+MC1A_file   <- read_xlsx("./data/qualtrics/test_qualtrics_1A.xlsx")
+
+MC1B_file   <- read_xlsx() 
+
+MC2A_file   <- read_xlsx()
+
+MC2B_file   <- read_xlsx("./data/qualtrics/test_qualtrics_2B.xlsx")
+
+MC3A_file     <- read_xlsx()
+
+MC3B_file     <- read_xlsx()
+
+files <- rbind(MC1A_file,MC2B_file)
 
 ## Load disclosure data
 
-data <- read_xlsx("./data/coding.xlsx")
+data <- read_xlsx("./data/coding_test.xlsx")
 
 ## Merge data
 
-df <- merge(data, MC2B_file, by = "ResponseId")
+df <- merge(data, files, by = "ResponseId")
 
 # Prepare data for analysis --------------------------------------------------
 
