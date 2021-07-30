@@ -23,15 +23,14 @@ info_desc <- sos_long %>%
     SE = SD/sqrt(n()),
     Upper = Mean + (1.96*SE),
     Lower = Mean - (1.96*SE)
-  ) %>% 
-  knitr::kable(digits = 2, align = "l")
+  )
 
 
-## Plot information disclosure (ERROR PLEASE HELP!)
+## Plot information disclosure 
 
 info_plot <- ggplot(sos_long,
        aes(
-         x = time,
+         x = factor(time),
          y = detail
        )) +
   facet_wrap(. ~ style) +
@@ -90,7 +89,7 @@ summary(info_model_int)
 
 ## Comparing regression models
 
-anova(info_model_1, info_model_int)
+comp_model_anova <- anova(info_model_1, info_model_int)
 
 
 # Hypothesis testing - Self-assessment of performance --------------------------------------------------

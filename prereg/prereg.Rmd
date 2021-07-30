@@ -1,5 +1,5 @@
 ---
-title           : "Advancinging the shift-of-strategy (SoS) approach: Shifting counter-interrogation strategies in extended interrogations"
+title           : "Advancing the shift-of-strategy (SoS) approach: Shifting counter-interrogation strategies in extended interrogations"
 shorttitle      : "OSF preregistration"
 date            : "`r Sys.setlocale('LC_TIME', 'C'); format(Sys.time(), '%d\\\\. %B %Y')`"
 
@@ -16,6 +16,7 @@ affiliation:
     institution : University of Gothenburg
 
 output: prereg::cos_prereg
+
 ---
 
 # Study Information
@@ -45,7 +46,7 @@ We will also assess and compare participants' experiences being interrogated usi
 
 Example: If taste affects preference, then mean preference indices will be higher with higher concentrations of sugar. -->
 
-###Information disclosure
+**Information disclosure**
 
 The SoS-Standard technique and the SoS-Reinforcement technique are identical for the first three themes of the interview. Therefore, participants in the SoS-Standard and SoS-Reinforcement conditions should not disclose significantly different amounts of information during the first three themes of the interview. 
 
@@ -53,13 +54,13 @@ We predict that participants in the SoS-Reinforcement condition will disclose mo
 
 (Exploratory) We want to explore if the Reinforcement stage has an instant effect on participants’ disclosure of crime relevant information. We will test whether participants in the SoS-Reinforcement condition disclose more information immediately after the Reinforcement-stage (theme four) than participants in the SoS-Standard condition.
 
-###Performance
+**Performance**
 
 (Exploratory) We will test whether the SoS conditions assess their performance more poorly than the Direct condition.
 
 (Exploratory) We will run an exploratory analysis to assess if all conditions on average assess their performance as better than the midpoint of the scale.
 
-###Interaction quality
+**Interaction quality**
 
 We expect that (1) the SoS conditions will not assess the interaction or the interviewer more poorly than the direct questioning condition, and (2) all conditions will on average assess the interaction and the interviewer as more positive than the negative endpoint of the scale.
 
@@ -100,7 +101,7 @@ Participants will complete one out of three online mock crime procedures. All th
 
 We have no hypotheses regarding differences between the mock crime procedures. We include three different mock crime procedures in our experiment to reduce the possibility of results stemming from features from any individual mock crime. 
 
-Three different interview conditions and six mock crime procedures means there are 18 different versions of the experiment that a participant could encounter. Participants will be randomized to participate in one of the 18 versions of the experiment. See participant version assignment list and code that generated the list in project file storage. 
+Three different interview conditions and six mock crime procedures means there are 18 different versions of the experiment that a participant could encounter. Participants will be randomized to participate in one of the 18 versions of the experiment. See participant version assignment list and code that generated the list in project GitHub (link). 
 
 
 # Sampling Plan
@@ -120,11 +121,11 @@ The answer to this question requires a specific set of instructions so that anot
 
 Example: Participants will be recruited through advertisements at local pastry shops. Participants will be paid $10 for agreeing to participate (raised to $30 if our sample size is not reached within 15 days of beginning recruitment). Participants must be at least 18 years old and be able to eat the ingredients of the pastries. -->
 
-Participants will be recruited through Prolific (prolific.co). Participants will be paid  XX GBP for their participation. Participants must be at least 18 years old and reside in the UK to be eligible to participate in the study.
+Participants will be recruited through Prolific (prolific.co). Participants will be paid  £7.50 for their participation. Participants must be at least 18 years old and have English as their first language to be eligible to participate in the study.
 
 Participants will be recruited to take part in an online mock crime that will involve multiple discrete events and substantial detail. Luke and Granhag (2020) used mock crimes with three stages. Here, to create the circumstances that could lead to especially lengthy interrogations, we will use mock crimes composed of six stages.
 
-Participants will complete an online survey on Qualtrics (qualtrics.com). The participants will be asked to watch two short video clips within the survey, each containing three mock crime stages. The clips act as the two online mock crime blocks. The video clips are filmed in a first person point of view, depicting a gloved person committing various crimes (clips available in file project file storage). The participants will be asked to imagine that they are the person committing the crimes shown in the clips. After watching the clips the participants will be interrogated via video conference on Zoom (zoom.us) about their activities. After completing the interrogation the participants will return to the Qualtrics survey and answer questions about their experience with the interrogation. All interrogations will be recorded for transcription and coding of dependent variables.
+Participants will complete an online survey on Qualtrics (qualtrics.com). The participants will be asked to watch two short video clips within the survey, each containing three mock crime stages. The clips act as the two online mock crime blocks. The video clips are filmed in a first person point of view, depicting a gloved person committing various crimes (clips available in project file storage). The participants will be asked to imagine that they are the person committing the crimes shown in the clips. After watching the clips the participants will be interrogated via video conference on Zoom (zoom.us) about their activities.To model the circumstances under which the SoS approach is applicable, participants will be motivated to convince the interrogator that they are innocent. Participants will be given the instruction to appear innocent in the interview and are told that they will be entered in a lottery where they can win an additional £40 if they convince the interrogator that they are innocent. After completing the interrogation the participants will return to the Qualtrics survey and answer questions about their experience with the interrogation. All interrogations will be recorded for transcription and coding of dependent variables.
 
 
 ## Sample size
@@ -166,7 +167,7 @@ Example: We manipulated the percentage of sugar by mass added to brownies. The f
 
 We will use a three-group experimental design, in which participants serving as mock intelligence sources will be questioned with one of three interrogation techniques (i.e., Direct questioning, SoS-Standard, and SoS-Reinforcement).
  
-In the Reinforcement condition, the interrogator will pause after covering several topics to summarize the source’s statement and give him or her the opportunity to offer clarifications, corrections, or modifications. During this summary, the interrogator will place special emphasis on the parts of the statement that are consistent or inconsistent with the interrogator’s knowledge, without judgment and without accusing the source of lying. Thus, the source will be given an additional signal that becoming forthcoming and consistent with the evidence may be a productive strategy (and that being withholding and inconsistent is potentially damaging). We will compare this new variation to the version of the approach that Luke and Granhag (2020) found most effective (SoS-Standard) and to a technique in which inconsistencies are not challenged (Direct).
+In the Reinforcement condition, the interrogator will pause after covering several topics to summarize the source’s statement and give them the opportunity to offer clarifications, corrections, or modifications. During this summary, the interrogator will place special emphasis on the parts of the statement that are consistent or inconsistent with the interrogator’s knowledge, without judgment and without accusing the source of lying. Thus, the source will be given an additional signal that becoming forthcoming and consistent with the evidence may be a productive strategy (and that being withholding and inconsistent is potentially damaging). We will compare this new variation to the version of the approach that Luke and Granhag (2020) found most effective (SoS-Standard) and to a technique in which inconsistencies are not challenged (Direct).
 
 The techniques vary in the manner in which the interviewer responds to statement-evidence inconsistencies. In the Direct condition the interviewer relies on direct questioning and will not challenge the suspects on any statement-evidence inconsistencies. In both the SoS-Standard and SoS-Reinforcement conditions the interviewer challenges inconsistencies without delay. 
 
@@ -186,6 +187,8 @@ For each phase of each mock crime, we have identified five details with increasi
 
 We will assess participants’ perception of how successful they were at convincing the interviewer they were innocent using self-reported endorsement of four statements about their performance in the interview. We will also assess participants’ perceptions of the quality of the interaction and the interviewer using their self-reported endorsement of lists of positive and negative adjectives (6 for the interaction, i.e., smooth, awkward, comfortable, difficult, open, and pleasant; and 6 for the interviewer, i.e., friendly, pressing, aggressive, sympathetic, interested, and harsh).
 
+Exploratory measures. The pre- and post-interview questionnaires also contain other exploratory measures.
+
 
 ## Indices
 <!-- If any measurements are  going to be combined into an index (or even a mean), what measures will you use and how will they be combined? Include either a formula or a precise description of your method. If your are using a more complicated statistical method to combine measures (e.g. a factor analysis), you can note that here but describe the exact method in the analysis plan section.
@@ -194,7 +197,7 @@ If you are using multiple pieces of data to construct a single variable, how wil
 
 Example: We will take the mean of the two questions above to create a single measure of 'brownie enjoyment.'  -->
 
-We will create three composite measures. One for the items regarding participants' self-assessment of performance, one for interaction quality and lastly one for interviewer quality (some items reverse coded so that higher values indicate more positive assessments)(see analysis code, available in project file storage). All three composites will be created by calculating the mean of the respective combined items.
+We will create three composite measures. One for the items regarding participants' self-assessment of performance, one for interaction quality and lastly one for interviewer quality (some items reverse coded so that higher values indicate more positive assessments)(see analysis code, available in project GitHub link). All three composites will be created by calculating the mean of the respective combined items.
 
 
 # Analysis Plan
@@ -213,15 +216,15 @@ This is perhaps the most important and most complicated question within the prer
 
 Example:  We will use a one-way between subjects ANOVA to analyze our results. The manipulated, categorical independent variable is 'sugar' whereas the dependent variable is our taste index. -->
 
-###Disclosure of information
+**Disclosure of information**
 
 We will assess our predictions by fitting a linear mixed effects model with fixed effects for time, time after treatment and immediate treatment, interview condition (treatment contrasts with SoS-Standard as reference group), and their interaction term, as well as random effects (intercepts) for each participant(nested in mock crime orders),crime event (nested in mock crime orders) and interviewer.
 
-###Self-assesment of performance
+**Self-assesment of performance**
 
 As a check on the effectiveness of creating an environment that did not stifle sources’ motivation, we will compare sources’ self-assessed performance between each of the three conditions using t-tests (Welch corrected). If these comparisons are nonsignificant, we will conduct follow-up equivalence tests, with a TOST approach (equivalence bounds set at |.20|). We will also test whether the mean self-assessment in each condition is significantly greater than the midpoint of the scale (3).
 
-###Interaction quality
+**Interaction quality**
 
 We will compare sources’ interaction and interviewer ratings between each of the three conditions using t-tests (Welch corrected). If these comparisons are nonsignificant, we will conduct follow-up equivalence tests, with a TOST approach (equivalence bounds set at |.20|). We will also test whether the mean ratings in each condition are significantly greater than the negative endpoint of the scale (1). We are comparing ratings to the endpoint of the scale because we do not necessarily expect the interactions to be perceived as positive overall (given their adversarial nature), but we view this as a test of whether people perceive the interaction as not having been highly aversive overall. If the SoS conditions in particular are perceived highly negatively, it may indicate practical or ethical issues with the approach.
 
@@ -240,7 +243,7 @@ p-values, confidence intervals, and effect sizes are standard means for making a
 
 Example: We will use the standard p<.05 criteria for determining if the ANOVA and the post hoc test suggest that the results are significantly different from those expected if the null hypothesis were correct. The post-hoc Tukey-Kramer test adjusts for multiple comparisons. -->
 
-We will use α = 0.05 when assessing our analyses. 
+We will use $\alpha$ = 0.05 when assessing our analyses. 
 
 
 ## Data exclusion
@@ -266,7 +269,7 @@ Subjects who do not complete the full interview will be not be included in the a
 
 Example: We expect that certain demographic traits may be related to taste preferences. Therefore, we will look for relationships between demographic variables (age, gender, income, and marital status) and the primary outcome measures of taste preferences. -->
 
-Enter your response here.
+
 
 
 # Other
@@ -274,14 +277,15 @@ Enter your response here.
 ## Other (Optional)
 <!-- If there is any additional information that you feel needs to be included in your preregistration, please enter it here. Literature cited, disclosures of any related work such as replications or work that uses the same data, or other context that will be helpful for future readers would be appropriate here. -->
 
-Enter your response here.
-
 
 # References
 ## 
+
+Luke, T. J., & Granhag, P. A. (2020, March 17). The Shift-of-Strategy (SoS) approach: Using evidence strategically to influence suspects’ counter-interrogation strategies. https://doi.org/10.31234/osf.io/wncb5
 \vspace{-2pc}
 \setlength{\parindent}{-0.5in}
 \setlength{\leftskip}{-1in}
 \setlength{\parskip}{8pt}
 \noindent
+
 
