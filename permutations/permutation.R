@@ -69,5 +69,5 @@ rows <- sample(nrow(sample_permutations))
 sample_permutations_random <- sample_permutations[rows,]
 
 
-write.csv(sample_permutations_random,"filmpermutations.csv", row.names = FALSE)
+write.csv(sample_permutations_random,"./permutations/filmpermutations.csv", row.names = FALSE)
 
