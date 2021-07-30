@@ -101,7 +101,7 @@ Participants will complete one out of three online mock crime procedures. All th
 
 We have no hypotheses regarding differences between the mock crime procedures. We include three different mock crime procedures in our experiment to reduce the possibility of results stemming from features from any individual mock crime. 
 
-Three different interview conditions and six mock crime procedures means there are 18 different versions of the experiment that a participant could encounter. Participants will be randomized to participate in one of the 18 versions of the experiment. See participant version assignment list and code that generated the list in project GitHub (link). 
+Three different interview conditions and six mock crime procedures means there are 18 different versions of the experiment that a participant could encounter. Participants will be randomized to participate in one of the 18 versions of the experiment. See participant version assignment list and code that generated the list in project GitHub (https://github.com/linanystrom/SOS-II). 
 
 
 # Sampling Plan
@@ -197,7 +197,7 @@ If you are using multiple pieces of data to construct a single variable, how wil
 
 Example: We will take the mean of the two questions above to create a single measure of 'brownie enjoyment.'  -->
 
-We will create three composite measures. One for the items regarding participants' self-assessment of performance, one for interaction quality and lastly one for interviewer quality (some items reverse coded so that higher values indicate more positive assessments)(see analysis code, available in project GitHub link). All three composites will be created by calculating the mean of the respective combined items.
+We will create three composite measures. One for the items regarding participants' self-assessment of performance, one for interaction quality and lastly one for interviewer quality (some items reverse coded so that higher values indicate more positive assessments)(see analysis code, available in project GitHub https://github.com/linanystrom/SOS-II). All three composites will be created by calculating the mean of the respective combined items.
 
 
 # Analysis Plan
