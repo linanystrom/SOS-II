@@ -5,10 +5,14 @@ packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "read
 lapply(packages, library, character.only = TRUE)
 
 # Import data --------------------------------------------------
+ 
+sos_full      <- read.csv("./data/sos_wrangle.csv")
 
-sos      <- read.csv("./data/sos_wrangle.csv")
+sos_long_full <- read.csv("./data/sos_long.csv")
 
-sos_long <- read.csv("./data/sos_long.csv")
+sos           <- sos_full %>% filter(!exclusion %in% c('1'))      #Filter exclusions
+
+sos_long      <- sos_long_full %>% filter(!exclusion %in% c('1')) #Filter exclusions
 
 # Hypothesis testing - Information disclosure --------------------------------------------------
 
