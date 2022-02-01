@@ -26,11 +26,11 @@ files <- rbind(MC1A_file,MC2B_file)
 
 ## Load disclosure data
 
-data <- read_xlsx("./data/coding_test.xlsx")
+data <- read_xlsx("./data/coding_solved.xlsx")
 
 ## Merge data
 
-df <- merge(data, files, by = "ResponseId")
+df <- merge(data, files, by = "ResponseId") %>% type_convert()
 
 # Prepare data for analysis --------------------------------------------------
 
@@ -99,7 +99,7 @@ sos <- df %>%
       interview_statements_3 == 1 ~ 5
     ),
     self_assessment = (interview_statements_1 + interview_statements_2 + interview_statements_3 + interview_statements_4)/4,
-  )
+    )
 
 ### Add crime_order column
 sos$crime_order <- paste(sos$mock_crime, sos$sequence)
@@ -107,11 +107,11 @@ sos$crime_order <- paste(sos$mock_crime, sos$sequence)
 ### Organize columns
 
 sos_wrangle <- sos %>%
-  select(ID, ResponseId, mock_crime, sequence, crime_order, style, interviewer, stage_1, stage_2, stage_3, stage_4, stage_5, stage_6, st_1_conf, st_2_conf, st_3_conf, st_4_conf, st_1_reinf, st_2_reinf, st_3_reinf, confidence, motivation, interview_qual, interviewer_qual, self_assessment, age, gender, everything())
+  select(ID, ResponseId, mock_crime, sequence, crime_order, style, interviewer, stage_1, stage_2, stage_3, stage_4, stage_5, stage_6, confidence, motivation, interview_qual, interviewer_qual, self_assessment, age, gender, everything())
 
 ### Transform data to long format
 
-sos_long <- sos_wrangle %>% pivot_longer(cols = starts_with("stage"), names_to = "time", values_to = "detail")
+sos_long <- sos_wrangle %>% pivot_longer(cols = c("stage_1", "stage_2", "stage_3", "stage_4", "stage_5", "stage_6"), names_to = "time", values_to = "detail")
 
 ### Code time variables for interrupted time series regression
 
@@ -127,21 +127,21 @@ sos_long <-sos_long %>%
     ),
     
     treatment = case_when(
-      sos_long$time == "stage_1" ~ 0,
-      sos_long$time == "stage_2" ~ 0,
-      sos_long$time == "stage_3" ~ 0,
-      sos_long$time == "stage_4" ~ 1,
-      sos_long$time == "stage_5" ~ 1,
-      sos_long$time == "stage_6" ~ 1
+      time == "stage_1" ~ 0,
+      time == "stage_2" ~ 0,
+      time == "stage_3" ~ 0,
+      time == "stage_4" ~ 1,
+      time == "stage_5" ~ 1,
+      time == "stage_6" ~ 1
     ),
     
     time = case_when(
-      sos_long$time == "stage_1" ~ 1,
-      sos_long$time == "stage_2" ~ 2,
-      sos_long$time == "stage_3" ~ 3,
-      sos_long$time == "stage_4" ~ 4,
-      sos_long$time == "stage_5" ~ 5,
-      sos_long$time == "stage_6" ~ 6
+      time == "stage_1" ~ 1,
+      time == "stage_2" ~ 2,
+      time == "stage_3" ~ 3,
+      time == "stage_4" ~ 4,
+      time == "stage_5" ~ 5,
+      time == "stage_6" ~ 6
     ))
 
 ### Factor condition

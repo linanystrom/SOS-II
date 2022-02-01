@@ -1,6 +1,6 @@
 # Basic setup --------------------------------------------------
 
-packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4", "TOSTER")
+packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -106,8 +106,7 @@ perf_desc <- sos %>%
     Mean = mean(self_assessment, na.rm = TRUE),
     SD = sd(self_assessment, na.rm = TRUE),
     Median = median(self_assessment, na.rm = TRUE)
-  ) %>% 
-  knitr::kable(digits = 2, align = "l")
+  )
 
 ## Plots self-assessment
 
@@ -153,7 +152,7 @@ self_table <- sos %>%
   ungroup()
 
 direct_mean <- filter(self_table, style == "direct")$Mean
-reinforcement_mean <- filter(self_table, style == "reiforcement")$Mean
+reinforcement_mean <- filter(self_table, style == "reinforcement")$Mean
 standard_mean <- filter(self_table, style == "standard")$Mean
 
 direct_sd <- filter(self_table, style == "direct")$SD
@@ -187,8 +186,7 @@ interview_desc <- sos %>%
     Mean = mean(interview_qual, na.rm = TRUE),
     SD = sd(interview_qual, na.rm = TRUE),
     Median = median(interview_qual, na.rm = TRUE)
-  ) %>% 
-  knitr::kable(digits = 2, align = "l")
+  ) 
 
 ## Plot
 
@@ -212,8 +210,7 @@ interviewer_desc <- sos %>%
     Mean = mean(interviewer_qual, na.rm = TRUE),
     SD = sd(interviewer_qual, na.rm = TRUE),
     Median = median(interviewer_qual, na.rm = TRUE)
-  ) %>% 
-  knitr::kable(digits = 2, align = "l")
+  ) 
 
 ## Plot
 
