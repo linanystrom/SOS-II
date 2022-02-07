@@ -1,10 +1,10 @@
-# Basic setup --------------------------------------------------
+# Basic setup ------------------------------------------------------------------
 
 packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest")
 
 lapply(packages, library, character.only = TRUE)
 
-# Import data --------------------------------------------------
+# Import data ------------------------------------------------------------------
  
 sos_full      <- read.csv("./data/sos_wrangle.csv")
 
@@ -14,11 +14,34 @@ sos           <- sos_full %>% filter(!exclusion %in% c('1'))      #Filter exclus
 
 sos_long      <- sos_long_full %>% filter(!exclusion %in% c('1')) #Filter exclusions
 
-# Hypothesis testing - Information disclosure --------------------------------------------------
+# Hypothesis testing - Information disclosure ----------------------------------
 
-##Descriptives
+## Plot Preparation
 
-info_desc <- sos_long %>% 
+sos_jitter <- sos %>% 
+  mutate(
+    jitter_y = runif(nrow(sos), min = -.20, max = .20),
+    jitter_x = runif(nrow(sos), min = -.20, max = .20)
+  ) %>% 
+  select(ID, jitter_y, jitter_x)
+
+sos_plot <- sos_long %>% 
+  left_join(sos_jitter, by = "ID") %>% 
+  mutate(
+    detail_jitter = detail + jitter_y,
+    time_jitter   = time   + jitter_x,
+    style         = case_when(
+      style == "direct"        ~ "Direct",
+      style == "reinforcement" ~ "Reinforcement",
+      style == "standard"      ~ "Standard"
+    )
+  )
+
+sos_plot$style <- ordered(sos_plot$style, levels = c("Direct", "Standard", "Reinforcement"))
+
+## Descriptives
+
+info_desc <- sos_plot %>% 
   group_by(style, time) %>% 
   summarise(
     Mean = mean(detail, na.rm = TRUE),
@@ -29,13 +52,12 @@ info_desc <- sos_long %>%
     Lower = Mean - (1.96*SE)
   )
 
-
 ## Plot information disclosure 
 
-info_plot <- ggplot(sos_long,
+info_plot <- ggplot(sos_plot,
        aes(
-         x = factor(time),
-         y = detail
+         x = time_jitter,
+         y = detail_jitter
        )) +
   facet_wrap(. ~ style) +
   geom_line(
@@ -44,7 +66,7 @@ info_plot <- ggplot(sos_long,
     ),
     size = .05,
     color = "grey",
-    position = position_jitter(width = .15, height = .15),
+    position = position_jitter(width = .15),
     alpha = .20
   ) +
   geom_line(
@@ -73,11 +95,66 @@ info_plot <- ggplot(sos_long,
     y = "Information disclosure",
     x = "Phase"
   ) +
-  scale_x_discrete(
-    labels = c("1", "2", "3","4","5","6") ## nope
+  scale_x_continuous(
+    labels = c("1", "2", "3","4","5","6"),
+    breaks = 1:6
   ) +
   coord_cartesian(
     ylim = c(0, 5)
+  ) +
+  theme_classic()
+
+info_plot_color <-
+  ggplot(sos_plot,
+         aes(
+           x = time_jitter,
+           y = detail_jitter
+         )) +
+  facet_wrap(. ~ style) +
+  geom_line(
+    aes(
+      group = ID,
+      color = as.factor(ID)
+    ),
+    size = .05,
+    position = position_jitter(width = .15),
+    alpha = .20
+  ) +
+  geom_line(
+    data = info_desc,
+    aes(
+      x = time,
+      y = Mean,
+      group = style
+    ),
+    color = "red",
+    size = 1.5
+  ) +
+  geom_errorbar(
+    data = info_desc,
+    aes(
+      x = time,
+      ymax = Upper,
+      ymin = Lower,
+      group = style
+    ),
+    inherit.aes = FALSE,
+    color = "red",
+    width = .25
+  ) +
+  labs(
+    y = "Information disclosure",
+    x = "Phase"
+  ) +
+  scale_x_continuous(
+    labels = c("1", "2", "3","4","5","6"),
+    breaks = 1:6
+  ) +
+  coord_cartesian(
+    ylim = c(0, 5)
+  ) +
+  guides(
+    color = "none"
   ) +
   theme_classic()
 
@@ -96,7 +173,7 @@ summary(info_model_int)
 comp_model_anova <- anova(info_model_1, info_model_int)
 
 
-# Hypothesis testing - Self-assessment of performance --------------------------------------------------
+# Hypothesis testing - Self-assessment of performance --------------------------
 
 ## Descriptives
 
