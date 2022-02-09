@@ -1,6 +1,6 @@
 # Basic setup ------------------------------------------------------------------
 
-packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest")
+packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest", "compute.es")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -38,6 +38,7 @@ sos_plot <- sos_long %>%
   )
 
 sos_plot$style <- ordered(sos_plot$style, levels = c("Direct", "Standard", "Reinforcement"))
+
 
 ## Descriptives
 
@@ -409,3 +410,87 @@ t_interviewer_neg_D <- t.test(filter(sos, style == "direct")$interviewer_qual, m
 t_interviewer_neg_S <- t.test(filter(sos, style == "standard")$interviewer_qual, mu = 1)
 
 t_interviewer_neg_R <- t.test(filter(sos, style == "reinforcement")$interviewer_qual, mu = 1)
+
+
+## Change Strategy
+
+### 1 = No, 2 = Yes
+
+change_strat <- sos %>%
+  drop_na (change_strategy) %>% 
+  group_by(style, change_strategy) %>%
+  summarise(
+    n = n()) %>%
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%"))
+
+## Frequency table - Disclosed details by Style & Phase
+
+sos_freq <- sos_plot
+
+sos_freq$time <- factor(sos_plot$time, levels = c("1", "2", "3", "4", "5", "6"), 
+                        labels = c("Phase 1", "Phase 2", "Phase 3", "Phase 4", "Phase 5", "Phase 6"))
+
+freq_table <- sos_freq %>% 
+  group_by(style, time, detail) %>%
+  summarise(n = n()) %>%
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%"))
+
+freq_test <- as.data.frame(freq_table)
+
+### Phase 5 & 6
+
+freq_table_phase_5 <- sos_freq %>% 
+  subset(time == "Phase 5") %>% 
+  group_by(style, detail) %>%
+  summarise(n = n()) %>%
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%"))
+
+freq_table_phase_6 <- sos_freq %>% 
+  subset(time == "Phase 6") %>% 
+  group_by(style, detail) %>%
+  summarise(n = n()) %>%
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%"))
+
+## Sum of details disclosed overall & critical phases
+
+sos$sum_info <- rowSums(subset(sos, select = stage_1:stage_6))
+sos$sum_crit <- rowSums(subset(sos, select = stage_5:stage_6))
+
+sum_desc <- sos %>% 
+  group_by(style) %>% 
+  summarise(
+    Mean = mean(sum_info, na.rm = TRUE),
+    SD = sd(sum_info, na.rm = TRUE),
+    Median = median(sum_info, na.rm = TRUE),
+    SE = SD/sqrt(n()),
+    Upper = Mean + (1.96*SE),
+    Lower = Mean - (1.96*SE)
+  )
+
+sum_d_DS <- mes(9.17, 14.7, 7.21, 8.78, 100, 100)
+
+sum_d_DR <- mes(9.17, 15.3, 7.21, 8.43, 100, 100)
+
+sum_d_SR <- mes(14.7, 15.3, 8.78, 8.43, 100, 100)
+
+crit_desc <- sos %>% 
+  group_by(style) %>% 
+  summarise(
+    Mean = mean(sum_crit, na.rm = TRUE),
+    SD = sd(sum_crit, na.rm = TRUE),
+    Median = median(sum_crit, na.rm = TRUE),
+    SE = SD/sqrt(n()),
+    Upper = Mean + (1.96*SE),
+    Lower = Mean - (1.96*SE)
+  )
+
+
+crit_d_DS <- mes(2.41, 3.9, 2.75, 3.26, 100, 100)
+
+crit_d_DR <- mes(2.41, 4.16, 2.75, 3.20, 100, 100)
+
+crit_d_SR <- mes(3.9, 4.16, 3.26, 3.20, 100, 100)
+
+
+
+
