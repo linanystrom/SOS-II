@@ -1,20 +1,30 @@
+################################################################################
+
+# SoS Reinforcement - Main analyses code
+
+################################################################################
+
 # Basic setup ------------------------------------------------------------------
 
-packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest", "compute.es")
+packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr",
+              "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest", "compute.es",
+              )
 
 lapply(packages, library, character.only = TRUE)
 
 # Import data ------------------------------------------------------------------
  
 sos_full      <- read.csv("./data/sos_wrangle.csv")
-
 sos_long_full <- read.csv("./data/sos_long.csv")
 
-sos           <- sos_full %>% filter(!exclusion %in% c('1'))      #Filter exclusions
+## Filter exclusions
 
-sos_long      <- sos_long_full %>% filter(!exclusion %in% c('1')) #Filter exclusions
+sos           <- sos_full %>% filter(!exclusion %in% c('1'))      
+sos_long      <- sos_long_full %>% filter(!exclusion %in% c('1')) 
+
 
 # Hypothesis testing - Information disclosure ----------------------------------
+
 
 ## Plot Preparation
 
@@ -37,7 +47,10 @@ sos_plot <- sos_long %>%
     )
   )
 
-sos_plot$style <- ordered(sos_plot$style, levels = c("Direct", "Standard", "Reinforcement"))
+
+sos_plot$style <- ordered(
+  sos_plot$style, levels = c("Direct","Standard","Reinforcement")
+  )
 
 
 ## Descriptives
@@ -52,6 +65,7 @@ info_desc <- sos_plot %>%
     Upper = Mean + (1.96*SE),
     Lower = Mean - (1.96*SE)
   )
+
 
 ## Plot information disclosure 
 
@@ -159,22 +173,50 @@ info_plot_color <-
   ) +
   theme_classic()
 
+
 ## Interrupted time series linear mixed effects model
 
-info_model_1 <- lmer(detail ~ time  + treatment + after + style + (1|crime_order/ID) + (1|interviewer), data = sos_long, REML = FALSE)
+### Main effect model
+
+info_model_1 <- lmer(detail
+                     ~ time  
+                     + treatment 
+                     + after 
+                     + style
+                     + (1|crime_order/ID) 
+                     + (1|interviewer),
+                     data = sos_long,
+                     REML = FALSE
+                     )
 
 summary(info_model_1)
 
-info_model_int <- lmer(detail ~ time  + treatment + after + style + time*style + treatment*style + after*style + (1|crime_order/ID) + (1|interviewer), data = sos_long, REML = FALSE)
+### Interection effect model
+
+info_model_int <- lmer(detail
+                       ~ time 
+                       + treatment 
+                       + after 
+                       + style 
+                       + time*style 
+                       + treatment*style 
+                       + after*style 
+                       + (1|crime_order/ID) 
+                       + (1|interviewer), 
+                       data = sos_long,
+                       REML = FALSE
+                       )
 
 summary(info_model_int)
 
-## Comparing regression models
+
+## Comparing regression models ANOVA
 
 comp_model_anova <- anova(info_model_1, info_model_int)
 
 
 # Hypothesis testing - Self-assessment of performance --------------------------
+
 
 ## Descriptives
 
@@ -186,12 +228,17 @@ perf_desc <- sos %>%
     Median = median(self_assessment, na.rm = TRUE)
   )
 
+
 ## Plots self-assessment
 
 perf_plot <- ggplot(sos,
        aes(
          x = self_assessment
        )) +
+  labs(
+    y = "Count",
+    x = "Self-assessment",
+  ) +
   facet_wrap(. ~ style) +
   geom_histogram(
     binwidth = .65,
@@ -200,23 +247,52 @@ perf_plot <- ggplot(sos,
   ) +
   theme_classic()
 
+
 ## Comparison of each condition
 
-t_self_DS <- t.test(self_assessment ~ style, data = filter(sos, style == "direct" | style == "standard"))
+### Direct v. Standard
 
-t_self_DR <-t.test(self_assessment ~ style, data = filter(sos, style == "direct" | style == "reinforcement"))
+t_self_DS <- t.test(
+  self_assessment ~ style,
+  data = filter(sos, style == "direct" | style == "standard")
+  )
 
-t_self_RS <-t.test(self_assessment ~ style, data = filter(sos, style == "reinforcement" | style == "standard"))
+### Direct v. Reinforcement
+
+t_self_DR <-t.test(
+  self_assessment ~ style, 
+  data = filter(sos, style == "direct" | style == "reinforcement")
+  )
+
+### Standard vs. Reinforcement
+
+t_self_RS <-t.test(
+  self_assessment ~ style,
+  data = filter(sos, style == "reinforcement" | style == "standard")
+  )
+
 
 ## Comparison to the midpoint
 
-t_self_mid_D <- t.test(filter(sos, style == "direct")$self_assessment, mu = 3)
+### Direct
 
-t_self_mid_S <- t.test(filter(sos, style == "standard")$self_assessment, mu = 3)
+t_self_mid_D <- t.test(
+  filter(sos, style == "direct")$self_assessment, mu = 3)
 
-t_self_mid_R <- t.test(filter(sos, style == "reinforcement")$self_assessment, mu = 3)
+### Standard
+
+t_self_mid_S <- t.test(
+  filter(sos, style == "standard")$self_assessment, mu = 3)
+
+### Reinforcement
+
+t_self_mid_R <- t.test(
+  filter(sos, style == "reinforcement")$self_assessment, mu = 3)
+
 
 ## TOST (Only performed if initial three t-test are nonsignificant)
+
+### TOST Preparation
 
 self_table <- sos %>%
   filter(complete.cases(self_assessment)) %>% 
@@ -228,6 +304,7 @@ self_table <- sos %>%
     n = n()
   ) %>% 
   ungroup()
+
 
 direct_mean <- filter(self_table, style == "direct")$Mean
 reinforcement_mean <- filter(self_table, style == "reinforcement")$Mean
@@ -241,22 +318,58 @@ direct_n <- filter(self_table, style == "direct")$n
 reinforcement_n <- filter(self_table, style == "reinforcement")$n
 standard_n <- filter(self_table, style == "standard")$n
 
-### Direct vs. Standard
 
-tost_self_DS <- TOSTtwo(m1 = direct_mean, m2 = standard_mean , sd1 = direct_sd, sd2 =  standard_sd, n1 = direct_n, n2 = standard_n, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
+## Direct vs. Standard
 
-### Direct vs. Reinforcement
+tost_self_DS <- TOSTtwo(m1 = direct_mean,
+                        m2 = standard_mean, 
+                        sd1 = direct_sd, 
+                        sd2 =  standard_sd, 
+                        n1 = direct_n, 
+                        n2 = standard_n, 
+                        low_eqbound_d = -.20, 
+                        high_eqbound_d = .20, 
+                        alpha = .05, 
+                        plot = FALSE, 
+                        var.equal = FALSE)
 
-tost_self_DR <-TOSTtwo(m1 = direct_mean, m2 = reinforcement_mean, sd1 = direct_sd, sd2 = reinforcement_sd, n1 = direct_n, n2 = reinforcement_n, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
 
-### Reinforcement vs. Standard
+## Direct vs. Reinforcement
 
-tost_self_RS <-TOSTtwo(m1 = standard_mean, m2 = reinforcement_mean, sd1 = standard_sd, sd2 = reinforcement_sd, n1 = standard_n, n2 = reinforcement_n, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
+tost_self_DR <-TOSTtwo(m1 = direct_mean,
+                       m2 = reinforcement_mean,
+                       sd1 = direct_sd,
+                       sd2 = reinforcement_sd,
+                       n1 = direct_n,
+                       n2 = reinforcement_n,
+                       low_eqbound_d = -.20, 
+                       high_eqbound_d = .20, 
+                       alpha = .05, 
+                       plot = FALSE, 
+                       var.equal = FALSE)
 
 
-# Hypothesis testing - Interaction quality --------------------------------------------------
+## Reinforcement vs. Standard
 
-## Descriptives - Interview
+tost_self_RS <-TOSTtwo(m1 = standard_mean,
+                       m2 = reinforcement_mean, 
+                       sd1 = standard_sd, 
+                       sd2 = reinforcement_sd, 
+                       n1 = standard_n,
+                       n2 = reinforcement_n, 
+                       low_eqbound_d = -.20, 
+                       high_eqbound_d = .20, 
+                       alpha = .05, 
+                       plot = FALSE, 
+                       var.equal = FALSE)
+
+
+# Hypothesis testing - Interaction quality -------------------------------------
+
+
+## Interview -------------------------------------------------------------------
+
+## Descriptives
 
 interview_desc <- sos %>%
   group_by(style) %>%
@@ -265,6 +378,7 @@ interview_desc <- sos %>%
     SD = sd(interview_qual, na.rm = TRUE),
     Median = median(interview_qual, na.rm = TRUE)
   ) 
+
 
 ## Plot
 
@@ -280,7 +394,124 @@ interview_plot <- ggplot(sos,
   ) +
   theme_classic()
 
-## Descriptives - Interviewer
+
+## Comparison - Interview
+
+### Direct vs. Standard
+
+t_inteview_DS <- t.test(
+  interview_qual ~ style, 
+  data = filter(sos, style == "direct" | style == "standard")
+)
+
+### Direct vs. Reinforcement
+
+t_inteview_DR <-t.test(
+  interview_qual ~ style, 
+  data = filter(sos, style == "direct" | style == "reinforcement")
+)
+
+### Standard vs. Reinforcement
+
+t_inteview_RS <-t.test(
+  interview_qual ~ style, 
+  data = filter(sos, style == "reinforcement" | style == "standard")
+)
+
+
+## TOST - These will only be used if the t-tests above are nonsignificant
+
+### TOST Preparation
+
+interview_table <- sos %>%
+  filter(complete.cases(interview_qual)) %>% 
+  group_by(style) %>%
+  summarise(
+    Mean = mean(interview_qual, na.rm = TRUE),
+    SD = sd(interview_qual, na.rm = TRUE),
+    Median = median(interview_qual, na.rm = TRUE),
+    n = n()
+  ) %>% 
+  ungroup()
+
+
+direct_mean_2 <- filter(interview_table, style == "direct")$Mean
+reinforcement_mean_2 <- filter(interview_table, style == "reinforcement")$Mean
+standard_mean_2 <- filter(interview_table, style == "standard")$Mean
+
+direct_sd_2 <- filter(interview_table, style == "direct")$SD
+reinforcement_sd_2 <- filter(interview_table, style == "reinforcement")$SD
+standard_sd_2 <- filter(interview_table, style == "standard")$SD
+
+direct_n_2 <- filter(interview_table, style == "direct")$n
+reinforcement_n_2 <- filter(interview_table, style == "reinforcement")$n
+standard_n_2 <- filter(interview_table, style == "standard")$n
+
+
+## Direct vs. Standard
+
+tost_interview_DS <- TOSTtwo(m1 = direct_mean_2, 
+                             m2 =standard_mean_2 , 
+                             sd1 = direct_sd_2, 
+                             sd2 = standard_sd_2, 
+                             n1 = direct_n_2, 
+                             n2 =standard_n_2, 
+                             low_eqbound_d = -.20, 
+                             high_eqbound_d = .20, 
+                             alpha = .05, 
+                             plot = FALSE, 
+                             var.equal = FALSE)
+
+## Direct vs. Reinforcement
+
+tost_interview_DR <-TOSTtwo(m1 = direct_mean_2, 
+                            m2 = reinforcement_mean_2, 
+                            sd1 = direct_sd_2, 
+                            sd2 = reinforcement_sd_2, 
+                            n1 = direct_n_2, 
+                            n2 = reinforcement_n_2, 
+                            low_eqbound_d = -.20, 
+                            high_eqbound_d = .20, 
+                            alpha = .05, 
+                            plot = FALSE, 
+                            var.equal = FALSE)
+
+## Reinforcement vs. Standard
+
+tost_interview_RS <-TOSTtwo(m1 =standard_mean_2, 
+                            m2 = reinforcement_mean_2, 
+                            sd1 =standard_sd_2, 
+                            sd2 = reinforcement_sd_2, 
+                            n1 =standard_n_2, 
+                            n2 = reinforcement_n_2, 
+                            low_eqbound_d = -.20, 
+                            high_eqbound_d = .20, 
+                            alpha = .05, 
+                            plot = FALSE, 
+                            var.equal = FALSE)
+
+## Comparison to negative endpoint
+
+### Direct
+
+t_interview_neg_D <- t.test(
+  filter(sos, style == "direct")$interview_qual, mu = 1)
+
+### Standard
+
+t_interview_neg_S <-t.test(
+  filter(sos, style == "standard")$interview_qual, mu = 1)
+
+### Reinforcement
+
+t_interview_neg_R <-t.test(
+  filter(sos, style == "reinforcement")$interview_qual, mu = 1)
+
+
+## Interviewer -----------------------------------------------------------------
+
+
+## Descriptives
 
 interviewer_desc <- sos %>%
   group_by(style) %>%
@@ -289,6 +520,7 @@ interviewer_desc <- sos %>%
     SD = sd(interviewer_qual, na.rm = TRUE),
     Median = median(interviewer_qual, na.rm = TRUE)
   ) 
+
 
 ## Plot
 
@@ -304,68 +536,34 @@ interviewer_plot <- ggplot(sos,
   ) +
   theme_classic()
 
-## Comparison - Interview
-
-t_inteview_DS <- t.test(interview_qual ~ style, data = filter(sos, style == "direct" | style == "standard"))
-
-t_inteview_DR <-t.test(interview_qual ~ style, data = filter(sos, style == "direct" | style == "reinforcement"))
-
-t_inteview_RS <-t.test(interview_qual ~ style, data = filter(sos, style == "reinforcement" | style == "standard"))
-
-## TOST - These will only be used if the t-tests above are nonsignificant
-
-interview_table <- sos %>%
-  filter(complete.cases(interview_qual)) %>% 
-  group_by(style) %>%
-  summarise(
-    Mean = mean(interview_qual, na.rm = TRUE),
-    SD = sd(interview_qual, na.rm = TRUE),
-    Median = median(interview_qual, na.rm = TRUE),
-    n = n()
-  ) %>% 
-  ungroup()
-
-direct_mean_2 <- filter(interview_table, style == "direct")$Mean
-reinforcement_mean_2 <- filter(interview_table, style == "reinforcement")$Mean
-standard_mean_2 <- filter(interview_table, style == "standard")$Mean
-
-direct_sd_2 <- filter(interview_table, style == "direct")$SD
-reinforcement_sd_2 <- filter(interview_table, style == "reinforcement")$SD
-standard_sd_2 <- filter(interview_table, style == "standard")$SD
-
-direct_n_2 <- filter(interview_table, style == "direct")$n
-reinforcement_n_2 <- filter(interview_table, style == "reinforcement")$n
-standard_n_2 <- filter(interview_table, style == "standard")$n
-
-### Direct vs. Standard
-
-tost_interview_DS <- TOSTtwo(m1 = direct_mean_2, m2 =standard_mean_2 , sd1 = direct_sd_2, sd2 = standard_sd_2, n1 = direct_n_2, n2 =standard_n_2, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
-
-### Direct vs. Reinforcement
-
-tost_interview_DR <-TOSTtwo(m1 = direct_mean_2, m2 = reinforcement_mean_2, sd1 = direct_sd_2, sd2 = reinforcement_sd_2, n1 = direct_n_2, n2 = reinforcement_n_2, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
-
-### Reinforcement vs. Standard
-
-tost_interview_RS <-TOSTtwo(m1 =standard_mean_2, m2 = reinforcement_mean_2, sd1 =standard_sd_2, sd2 = reinforcement_sd_2, n1 =standard_n_2, n2 = reinforcement_n_2, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
-
-## Comparison to negative endpoint
-
-t_interview_neg_D <- t.test(filter(sos, style == "direct")$interview_qual, mu = 1)
-
-t_interview_neg_S <-t.test(filter(sos, style == "standard")$interview_qual, mu = 1)
-
-t_interview_neg_R <-t.test(filter(sos, style == "reinforcement")$interview_qual, mu = 1)
 
 ## Comparison - Interviewer
 
-t_interviewer_DS <- t.test(interviewer_qual ~ style, data = filter(sos, style == "direct" | style == "standard"))
+### Direct vs. Standard
 
-t_interviewer_DR <-t.test(interviewer_qual ~ style, data = filter(sos, style == "direct" | style == "reinforcement"))
+t_interviewer_DS <- t.test(
+  interviewer_qual ~ style,
+  data = filter(sos, style == "direct" | style == "standard")
+  )
 
-t_interviewer_RS <-t.test(interviewer_qual ~ style, data = filter(sos, style == "reinforcement" | style == "standard"))
+### Direct vs. Reinforcement
+
+t_interviewer_DR <-t.test(
+  interviewer_qual ~ style, 
+  data = filter(sos, style == "direct" | style == "reinforcement")
+  )
+
+### Standard vs. Reinforcement
+
+t_interviewer_RS <-t.test(
+  interviewer_qual ~ style, 
+  data = filter(sos, style == "reinforcement" | style == "standard")
+  )
+
 
 ## TOST - These will only be used if the t-tests above are nonsignificant
+
+### TOST Preparation
 
 interviewer_table <- sos %>%
   filter(complete.cases(interview_qual)) %>% 
@@ -378,6 +576,7 @@ interviewer_table <- sos %>%
   ) %>% 
   ungroup()
 
+
 direct_mean_3 <- filter(interviewer_table, style == "direct")$Mean
 reinforcement_mean_3 <- filter(interviewer_table, style == "reinforcement")$Mean
 standard_mean_3 <- filter(interviewer_table, style == "standard")$Mean
@@ -385,76 +584,116 @@ standard_mean_3 <- filter(interviewer_table, style == "standard")$Mean
 direct_sd_3 <- filter(interviewer_table, style == "direct")$SD
 reinforcement_sd_3 <- filter(interviewer_table, style == "reinforcement")$SD
 standard_sd_3 <- filter(interviewer_table, style == "standard")$SD
-
+  
 direct_n_3 <- filter(interviewer_table, style == "direct")$n
 reinforcement_n_3 <- filter(interviewer_table, style == "reinforcement")$n
 standard_n_3 <- filter(interviewer_table, style == "standard")$n
 
+
 ### Direct vs. Standard
 
-tost_interviewer_DS <- TOSTtwo(m1 = direct_mean_3, m2 = standard_mean_3 , sd1 = direct_sd_3, sd2 = standard_sd_3, n1 = direct_n_3, n2 = standard_n_3, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
+tost_interviewer_DS <- TOSTtwo(m1 = direct_mean_3,
+                               m2 = standard_mean_3,
+                               sd1 = direct_sd_3,
+                               sd2 = standard_sd_3,
+                               n1 = direct_n_3,
+                               n2 = standard_n_3,
+                               low_eqbound_d = -.20,
+                               high_eqbound_d = .20,
+                               alpha = .05,
+                               plot = FALSE,
+                               var.equal = FALSE)
 
 ### Direct vs. Reinforcement
 
-tost_interviewer_DR <- TOSTtwo(m1 = direct_mean_3, m2 = reinforcement_mean_3, sd1 = direct_sd_3, sd2 = reinforcement_sd_3, n1 = direct_n_3, n2 = reinforcement_n_3, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
+tost_interviewer_DR <- TOSTtwo(m1 = direct_mean_3, 
+                               m2 = reinforcement_mean_3, 
+                               sd1 = direct_sd_3, 
+                               sd2 = reinforcement_sd_3, 
+                               n1 = direct_n_3, 
+                               n2 = reinforcement_n_3, 
+                               low_eqbound_d = -.20, 
+                               high_eqbound_d = .20, 
+                               alpha = .05, 
+                               plot = FALSE, 
+                               var.equal = FALSE)
 
 ### Reinforcement vs. Standard
 
-tost_interviewer_RS <- TOSTtwo(m1 = standard_mean_3, m2 = reinforcement_mean_3, sd1 = standard_sd_3, sd2 = reinforcement_sd_3, n1 = standard_n_3, n2 = reinforcement_n_3, low_eqbound_d = -.20, high_eqbound_d = .20, alpha = .05, plot = FALSE, var.equal = FALSE)
+tost_interviewer_RS <- TOSTtwo(m1 = standard_mean_3, 
+                               m2 = reinforcement_mean_3, 
+                               sd1 = standard_sd_3, 
+                               sd2 = reinforcement_sd_3, 
+                               n1 = standard_n_3, 
+                               n2 = reinforcement_n_3, 
+                               low_eqbound_d = -.20, 
+                               high_eqbound_d = .20, 
+                               alpha = .05, 
+                               plot = FALSE, 
+                               var.equal = FALSE)
 
 
 ## Comparison to the negative endpoint
 
-t_interviewer_neg_D <- t.test(filter(sos, style == "direct")$interviewer_qual, mu = 1)
+### Direct
 
-t_interviewer_neg_S <- t.test(filter(sos, style == "standard")$interviewer_qual, mu = 1)
+t_interviewer_neg_D <- t.test(filter(
+  sos, style == "direct")$interviewer_qual, mu = 1)
 
-t_interviewer_neg_R <- t.test(filter(sos, style == "reinforcement")$interviewer_qual, mu = 1)
+### Standard
 
+t_interviewer_neg_S <- t.test(filter(
+  sos, style == "standard")$interviewer_qual, mu = 1)
 
-## Change Strategy
+### Reinforcement
 
-### 1 = No, 2 = Yes
+t_interviewer_neg_R <- t.test(filter(
+  sos, style == "reinforcement")$interviewer_qual, mu = 1)
 
-change_strat <- sos %>%
-  drop_na (change_strategy) %>% 
-  group_by(style, change_strategy) %>%
-  summarise(
-    n = n()) %>%
-  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%"))
 
 ## Frequency table - Disclosed details by Style & Phase
 
 sos_freq <- sos_plot
 
-sos_freq$time <- factor(sos_plot$time, levels = c("1", "2", "3", "4", "5", "6"), 
-                        labels = c("Phase 1", "Phase 2", "Phase 3", "Phase 4", "Phase 5", "Phase 6"))
-
+sos_freq$time <- factor(
+  sos_plot$time,
+  levels = c("1", "2", "3", "4", "5", "6"),
+  labels = c("Phase 1", "Phase 2", "Phase 3", "Phase 4", "Phase 5","Phase 6")
+  )
+                        
 freq_table <- sos_freq %>% 
   group_by(style, time, detail) %>%
   summarise(n = n()) %>%
-  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%"))
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%")
+         )
 
-freq_test <- as.data.frame(freq_table)
+## Frequency Disclosed details, critical phases
 
-### Phase 5 & 6
+### Phase 5
 
 freq_table_phase_5 <- sos_freq %>% 
   subset(time == "Phase 5") %>% 
   group_by(style, detail) %>%
   summarise(n = n()) %>%
-  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%"))
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%")
+         )
+
+### Phase 6
 
 freq_table_phase_6 <- sos_freq %>% 
   subset(time == "Phase 6") %>% 
   group_by(style, detail) %>%
   summarise(n = n()) %>%
-  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%"))
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%")
+         )
 
 ## Sum of details disclosed overall & critical phases
 
+### Creating variable for sum of details disclosed in phases 1-6
+
 sos$sum_info <- rowSums(subset(sos, select = stage_1:stage_6))
-sos$sum_crit <- rowSums(subset(sos, select = stage_5:stage_6))
+
+## Descriptives
 
 sum_desc <- sos %>% 
   group_by(style) %>% 
@@ -467,11 +706,49 @@ sum_desc <- sos %>%
     Lower = Mean - (1.96*SE)
   )
 
-sum_d_DS <- mes(9.17, 14.7, 7.21, 8.78, 100, 100)
+## Effect size calculations, disclosed details, all phases
 
-sum_d_DR <- mes(9.17, 15.3, 7.21, 8.43, 100, 100)
+## Direct vs. Standard
 
-sum_d_SR <- mes(14.7, 15.3, 8.78, 8.43, 100, 100)
+sum_d_DS <- mes(
+  m.1  = crit_desc[sum_desc$style == "standard", ]$Mean,
+  m.2  = crit_desc[sum_desc$style == "direct", ]$Mean,
+  sd.1 = crit_desc[sum_desc$style == "standard", ]$SD,
+  sd.2 = crit_desc[sum_desc$style == "direct", ]$SD,
+  n.1  = crit_desc[sum_desc$style == "standard", ]$n,
+  n.2  = crit_desc[sum_desc$style == "direct", ]$n
+)
+
+## Direct vs. Reinforcement
+
+sum_d_DR <- mes(
+  m.1  = crit_desc[sum_desc$style == "reinforcement", ]$Mean,
+  m.2  = crit_desc[sum_desc$style == "direct", ]$Mean,
+  sd.1 = crit_desc[sum_desc$style == "reinforcement", ]$SD,
+  sd.2 = crit_desc[sum_desc$style == "direct", ]$SD,
+  n.1  = crit_desc[sum_desc$style == "reinforcement", ]$n,
+  n.2  = crit_desc[sum_desc$style == "direct", ]$n
+)
+
+## Standard vs. Reinforcement
+
+sum_d_SR <- mes(
+  m.1  = crit_desc[sum_desc$style == "reinforcement", ]$Mean,
+  m.2  = crit_desc[sum_desc$style == "standard", ]$Mean,
+  sd.1 = crit_desc[sum_desc$style == "reinforcement", ]$SD,
+  sd.2 = crit_desc[sum_desc$style == "standard", ]$SD,
+  n.1  = crit_desc[sum_desc$style == "reinforcement", ]$n,
+  n.2  = crit_desc[sum_desc$style == "standard", ]$n
+)
+
+
+## Effect size calculations, disclosed details, critical phases
+
+### Creating variable for sum of details disclosed in all critical phases (5-6)
+
+sos$sum_crit <- rowSums(subset(sos, select = stage_5:stage_6))
+
+## Descriptives
 
 crit_desc <- sos %>% 
   group_by(style) %>% 
@@ -481,16 +758,40 @@ crit_desc <- sos %>%
     Median = median(sum_crit, na.rm = TRUE),
     SE = SD/sqrt(n()),
     Upper = Mean + (1.96*SE),
-    Lower = Mean - (1.96*SE)
+    Lower = Mean - (1.96*SE),
+    n = n()
   )
 
+## Direct vs. Standard
 
-crit_d_DS <- mes(2.41, 3.9, 2.75, 3.26, 100, 100)
+crit_d_DS <- mes(
+  m.1  = crit_desc[crit_desc$style == "standard", ]$Mean,
+  m.2  = crit_desc[crit_desc$style == "direct", ]$Mean,
+  sd.1 = crit_desc[crit_desc$style == "standard", ]$SD,
+  sd.2 = crit_desc[crit_desc$style == "direct", ]$SD,
+  n.1  = crit_desc[crit_desc$style == "standard", ]$n,
+  n.2  = crit_desc[crit_desc$style == "direct", ]$n
+  )
 
-crit_d_DR <- mes(2.41, 4.16, 2.75, 3.20, 100, 100)
+## Direct vs. Reinforcement
 
-crit_d_SR <- mes(3.9, 4.16, 3.26, 3.20, 100, 100)
+crit_d_DR <- mes(
+  m.1  = crit_desc[crit_desc$style == "reinforcement", ]$Mean,
+  m.2  = crit_desc[crit_desc$style == "direct", ]$Mean,
+  sd.1 = crit_desc[crit_desc$style == "reinforcement", ]$SD,
+  sd.2 = crit_desc[crit_desc$style == "direct", ]$SD,
+  n.1  = crit_desc[crit_desc$style == "reinforcement", ]$n,
+  n.2  = crit_desc[crit_desc$style == "direct", ]$n
+)
 
+## Standard vs. Reinforcement
 
-
+crit_d_SR <- mes(
+  m.1  = crit_desc[crit_desc$style == "reinforcement", ]$Mean,
+  m.2  = crit_desc[crit_desc$style == "standard", ]$Mean,
+  sd.1 = crit_desc[crit_desc$style == "reinforcement", ]$SD,
+  sd.2 = crit_desc[crit_desc$style == "standard", ]$SD,
+  n.1  = crit_desc[crit_desc$style == "reinforcement", ]$n,
+  n.2  = crit_desc[crit_desc$style == "standard", ]$n
+)
 
