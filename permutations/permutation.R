@@ -1,4 +1,10 @@
-#Generating MC permutations
+################################################################################
+
+# SoS Reinforcement - Permutations code
+
+################################################################################
+
+# Basic setup ------------------------------------------------------------------
 
 ## Packages
 
@@ -20,6 +26,8 @@ group     <- sample / nr_mcs
 
 style     <- c("direct", "standard", "reinforcement") #interview style
 stages    <- c("A","B")                               #stages
+
+# Create permutations ----------------------------------------------------------
 
 ## Generate permutations for stages
 
@@ -47,29 +55,45 @@ mc_x_poss_permutations <- poss_permutations*nr_mcs
 
 ## Creating data frame with all possible permutations * number of mock crimes
 
-MCpermutations <- do.call("rbind", replicate(nr_mcs, perm_list, simplify = FALSE))
+MCpermutations <- do.call("rbind", replicate(
+  nr_mcs, 
+  perm_list, 
+  simplify = FALSE))
 
-## Assigning mock crime to permitations
+## Assigning mock crime to permutations
 
 MCpermutations$mock_crime <- NA
 
 MCpermutations$mock_crime <- c("MC_2")
-MCpermutations$mock_crime[1:poss_permutations]<- c("MC_1")
-MCpermutations$mock_crime[(mc_x_poss_permutations - (poss_permutations - 1)):mc_x_poss_permutations]<- c("MC_3")
+MCpermutations$mock_crime[1:poss_permutations] <- c("MC_1")
+MCpermutations$mock_crime[(
+  mc_x_poss_permutations - (poss_permutations - 1))
+  :mc_x_poss_permutations]<- c("MC_3")
 
-sample_permutations <- do.call("rbind", replicate((sample/mc_x_poss_permutations), MCpermutations, simplify = FALSE))
 
-sample_permutations$style[sample(1:nrow(sample_permutations), nrow(sample_permutations), FALSE)] <- rep(style,group)
+sample_permutations <- do.call(
+  "rbind",
+  replicate((sample/mc_x_poss_permutations),
+            MCpermutations, simplify = FALSE))
+
+
+sample_permutations$style[sample(
+  1:nrow(sample_permutations),
+  nrow(sample_permutations), FALSE)] <- rep(style,group)
+
 
 style_count <- count(sample_permutations, style)
 MC_count <- count(sample_permutations, mock_crime)
-
 overall_count <- count(sample_permutations, mock_crime, sequence, style)
 
-rows <- sample(nrow(sample_permutations))
 
+rows <- sample(nrow(sample_permutations))
 sample_permutations_random <- sample_permutations[rows,]
 
+# Export permutations ----------------------------------------------------------
 
-write.csv(sample_permutations_random,"./permutations/filmpermutations.csv", row.names = FALSE)
+write.csv(
+  sample_permutations_random,
+  "./permutations/filmpermutations.csv",
+  row.names = FALSE)
 

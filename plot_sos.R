@@ -22,7 +22,7 @@ sos_freq <- sos_plot
 
 sos_plot <- sos_long %>% 
   mutate(
-    style         = case_when(
+    style  = case_when(
       style == "direct"        ~ "Direct",
       style == "reinforcement" ~ "Reinforcement",
       style == "standard"      ~ "Standard"
@@ -68,9 +68,9 @@ grid_detail <- ggplot(sos_freq,
 #Self-assessment, by style -----------------------------------------------------
 
 perf_plot <- ggplot(sos_freq,
-                    aes(
-                    x = self_assessment
-                    )) +
+    aes(
+      x = self_assessment
+  )) +
   labs(
     y = "Count",
     x = "Self-assessment",

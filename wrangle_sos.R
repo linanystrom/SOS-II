@@ -1,10 +1,17 @@
-# Basic setup --------------------------------------------------
+################################################################################
 
-packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr", "readxl", "ggplot2", "lme4")
+# SoS Reinforcement - Data Wrangling
+
+################################################################################
+
+# Basic setup ------------------------------------------------------------------
+
+packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr",
+              "readxl", "ggplot2", "lme4")
 
 lapply(packages, library, character.only = TRUE)
 
-# Load & Merge data --------------------------------------------------
+# Load & Merge data ------------------------------------------------------------
 
 ## Load Qualtrics data
 
@@ -22,7 +29,8 @@ df <- merge(data, files, by = "ResponseId") %>% type_convert()
 
 # Prepare data for analysis --------------------------------------------------
 
-## Reverse code interview quality, interviewer quality and self-assesment items. Create interview quality, interviewer quality and self-assesment composite. 
+## Reverse code interview quality, interviewer quality and self-assesment items.
+## Create interview quality, interviewer quality and self-assesment composite. 
 
 ###Interview quality
 
@@ -43,7 +51,13 @@ sos <- df %>%
       interview_adj_4 == 1 ~ 5
     ),
     
-    interview_qual = (interview_adj_1 + interview_adj_2_R + interview_adj_3 + interview_adj_4_R + interview_adj_5 + interview_adj_6)/6,
+    interview_qual = (
+      interview_adj_1 + 
+        interview_adj_2_R + 
+        interview_adj_3 + 
+        interview_adj_4_R + 
+        interview_adj_5 + 
+        interview_adj_6)/6,
     
 ###Interviewer quality
     
@@ -68,7 +82,13 @@ sos <- df %>%
       interviewer_adj_6 == 2 ~ 4,
       interviewer_adj_6 == 1 ~ 5
     ),
-    interviewer_qual = (interviewer_adj_1 + interviewer_adj_2_R + interviewer_adj_3_R + interviewer_adj_4 + interviewer_adj_5 + interviewer_adj_6_R)/6,
+    interviewer_qual = (
+      interviewer_adj_1 + 
+        interviewer_adj_2_R + 
+        interviewer_adj_3_R + 
+        interviewer_adj_4 + 
+        interviewer_adj_5 + 
+        interviewer_adj_6_R)/6,
     
 ### Self-assessment of performance
     
@@ -86,7 +106,11 @@ sos <- df %>%
       interview_statements_3 == 2 ~ 4,
       interview_statements_3 == 1 ~ 5
     ),
-    self_assessment = (interview_statements_1 + interview_statements_2 + interview_statements_3 + interview_statements_4)/4,
+    self_assessment = (
+      interview_statements_1 + 
+        interview_statements_2 + 
+        interview_statements_3 + 
+        interview_statements_4)/4,
     )
 
 ### Add crime_order column
@@ -95,11 +119,40 @@ sos$crime_order <- paste(sos$mock_crime, sos$sequence)
 ### Organize columns
 
 sos_wrangle <- sos %>%
-  select(ID, ResponseId, mock_crime, sequence, crime_order, style, interviewer, stage_1, stage_2, stage_3, stage_4, stage_5, stage_6, confidence, motivation, interview_qual, interviewer_qual, self_assessment, age, gender, everything())
+  select(ID,
+         ResponseId, 
+         mock_crime, 
+         sequence, 
+         crime_order, 
+         style, 
+         interviewer, 
+         stage_1, 
+         stage_2, 
+         stage_3, 
+         stage_4, 
+         stage_5, 
+         stage_6, 
+         confidence, 
+         motivation, 
+         interview_qual, 
+         interviewer_qual, 
+         self_assessment, 
+         age, 
+         gender, 
+         everything())
 
 ### Transform data to long format
 
-sos_long <- sos_wrangle %>% pivot_longer(cols = c("stage_1", "stage_2", "stage_3", "stage_4", "stage_5", "stage_6"), names_to = "time", values_to = "detail")
+sos_long <- sos_wrangle %>% 
+  pivot_longer(
+    cols = c("stage_1",
+             "stage_2",
+             "stage_3",
+             "stage_4",
+             "stage_5",
+             "stage_6"),
+    names_to = "time",
+    values_to = "detail")
 
 ### Code time variables for interrupted time series regression
 
@@ -134,7 +187,11 @@ sos_long <-sos_long %>%
 
 ### Factor condition
 
-sos_long$style <- factor(sos_long$style, levels = c("standard", "direct", "reinforcement"))
+sos_long$style <- factor(
+  sos_long$style,
+  levels = c("standard",
+             "direct",
+             "reinforcement"))
 
 
 # Export data --------------------------------------------------

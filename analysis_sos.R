@@ -7,8 +7,7 @@
 # Basic setup ------------------------------------------------------------------
 
 packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr",
-              "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest", "compute.es",
-              )
+              "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest", "compute.es")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -248,7 +247,7 @@ perf_plot <- ggplot(sos,
   theme_classic()
 
 
-## Comparison of each condition
+## Pairwise comparisons, self-assessment
 
 ### Direct v. Standard
 
@@ -395,7 +394,7 @@ interview_plot <- ggplot(sos,
   theme_classic()
 
 
-## Comparison - Interview
+## Pairwise comparisons - Interview quality
 
 ### Direct vs. Standard
 
@@ -537,7 +536,7 @@ interviewer_plot <- ggplot(sos,
   theme_classic()
 
 
-## Comparison - Interviewer
+## Pairwise comparisons - Interviewer perception
 
 ### Direct vs. Standard
 
