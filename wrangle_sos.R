@@ -21,13 +21,13 @@ files <- read_csv("./data/qualtrics/qualtrics_files.csv")
 
 ## Load disclosure data
 
-data <- read_xlsx("./data/coding_solved.xlsx")
+data <- read_xlsx("./data/coding/coding_solved.xlsx")
 
 ## Merge data
 
 df <- merge(data, files, by = "ResponseId") %>% type_convert()
 
-# Prepare data for analysis --------------------------------------------------
+# Prepare data for analysis ----------------------------------------------------
 
 ## Reverse code interview quality, interviewer quality and self-assesment items.
 ## Create interview quality, interviewer quality and self-assesment composite. 
@@ -176,13 +176,30 @@ sos_long <-sos_long %>%
       time == "stage_6" ~ 1
     ),
     
+    start_slope = case_when(
+      time == "stage_1" ~ 0,
+      time == "stage_2" ~ 1,
+      time == "stage_3" ~ 2,
+      time == "stage_4" ~ 3,
+      time == "stage_5" ~ 4,
+      time == "stage_6" ~ 4
+    ),
+    end_slope = case_when(
+      time == "stage_1" ~ 0,
+      time == "stage_2" ~ 0,
+      time == "stage_3" ~ 0,
+      time == "stage_4" ~ 0,
+      time == "stage_5" ~ 1,
+      time == "stage_6" ~ 2
+    ),
+    
     time = case_when(
-      time == "stage_1" ~ 1,
-      time == "stage_2" ~ 2,
-      time == "stage_3" ~ 3,
-      time == "stage_4" ~ 4,
-      time == "stage_5" ~ 5,
-      time == "stage_6" ~ 6
+      time == "stage_1" ~ 0,
+      time == "stage_2" ~ 1,
+      time == "stage_3" ~ 2,
+      time == "stage_4" ~ 3,
+      time == "stage_5" ~ 4,
+      time == "stage_6" ~ 5
     ))
 
 ### Factor condition
@@ -194,7 +211,7 @@ sos_long$style <- factor(
              "reinforcement"))
 
 
-# Export data --------------------------------------------------
+# Export data ------------------------------------------------------------------
 
 write.csv(
   sos_wrangle,

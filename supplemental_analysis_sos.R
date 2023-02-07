@@ -7,7 +7,7 @@
 # Basic setup ------------------------------------------------------------------
 packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr",
               "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest", "compute.es",
-              "psych", "wesanderson", "corrplot")
+              "psych", "wesanderson", "corrplot", "ggpubr", "lavaan", "semTools")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -150,6 +150,33 @@ SR_prop_test <- prop.test(x= change_strat_sr,
                           n= rowSums(change_strat_sr),
                           correct = FALSE)
 
+# Disclosure of critical details -----------------------------------------------
+
+
+freq_detail <- sos %>%
+  drop_na (sum_crit) %>% 
+  group_by(style, sum_crit) %>%
+  summarise(
+    n = n()) %>%
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%")
+  )
+
+freq_crit_plot <- ggplot(sos,
+                         aes(
+                           x = sum_crit
+                         )) +
+  labs(
+    y = "Count",
+    x = "Critical details",
+  ) +
+  facet_wrap(. ~ style) +
+  geom_histogram(
+    binwidth = 1,
+    color = "black",
+    fill = "darkgrey"
+  ) +
+  theme_classic()
+
 
 # Motivation to appear innocent-------------------------------------------------
 
@@ -198,6 +225,29 @@ self_corr <- omega(self_assessment_corr)
 
 summary(self_corr)
 
+## CFA
+
+self_assessment_uni_model <- 
+'
+
+self =~ interview_statements_1
++ interview_statements_2
++ interview_statements_3
++ interview_statements_4
+
+'
+
+self_uni_fit <- cfa(self_assessment_uni_model, data = sos,
+                    std.lv = TRUE,
+                    estimator = "MLR")
+
+summary(self_uni_fit, fit.measures = TRUE)
+
+reliability(self_uni_fit)
+
+compRelSEM(self_uni_fit)
+
+
 ## Interview quality
 
 interviewQ_corr = sos[c(
@@ -215,6 +265,30 @@ lowerCor(interviewQ_corr)
 IQ_corr <- omega(interviewQ_corr)
 
 summary(IQ_corr)
+
+## CFA
+
+interviewQ_uni_model <- 
+  '
+
+self =~ interview_adj_1
++ interview_adj_2_R
++ interview_adj_3
++ interview_adj_4_R
++ interview_adj_5
++ interview_adj_6
+
+'
+
+interviewQ_fit <- cfa(interviewQ_uni_model, data = sos,
+                    std.lv = TRUE,
+                    estimator = "MLR")
+
+summary(interviewQ_fit, fit.measures = TRUE)
+
+reliability(interviewQ_fit)
+
+compRelSEM(interviewQ_fit)
 
 
 ## Interviewer perception
@@ -235,6 +309,30 @@ lowerCor(interviewerP_corr)
 IP_corr <- omega(interviewerP_corr)
 
 summary(IP_corr)
+
+## CFA
+
+interviewerP_uni_model <- 
+  '
+
+self =~ interviewer_adj_1
++ interviewer_adj_2_R
++ interviewer_adj_3_R
++ interviewer_adj_4
++ interviewer_adj_5
++ interviewer_adj_6_R
+
+'
+
+interviewerP_fit <- cfa(interviewerP_uni_model, data = sos,
+                      std.lv = TRUE,
+                      estimator = "MLR")
+
+summary(interviewerP_fit, fit.measures = TRUE)
+
+reliability(interviewerP_fit)
+
+compRelSEM(interviewerP_fit)
 
 # Interviewer perception, individual items -------------------------------------
 
@@ -538,7 +636,6 @@ corr_plot_5_6 <- ggplot(sos,
   stat_cor(method = "pearson") +
   theme_classic()
 
-
 # Demographics------------------------------------------------------------------
 
 age_table <- sos %>% 
@@ -553,4 +650,151 @@ gender_table <- sos %>%
   summarise(
     n = n()
   )
+
+# Perception of info -----------------------------------------------------------
+
+## Descriptives - knowledge_before
+
+pre_knowledge_tale  <- sos %>%
+  group_by(style) %>%
+  summarise(
+    Mean = mean(knowledge_before, na.rm = TRUE),
+    SD = sd(knowledge_before, na.rm = TRUE),
+    Median = median(knowledge_before, na.rm = TRUE),
+    SE = SD/sqrt(n()),
+    Upper = Mean + (1.96*SE),
+    Lower = Mean - (1.96*SE)
+  )
+
+### Direct v. Standard
+
+t_k_DS <- t.test(
+  knowledge_before ~ style,
+  data = filter(sos, style == "direct" | style == "standard")
+)
+
+### Direct v. Reinforcement
+
+t_k_DR <- t.test(
+  knowledge_before ~ style,
+  data = filter(sos, style == "direct" | style == "reinforcement")
+)
+
+### Standard vs. Reinforcement
+
+t_k_RS <- t.test(
+  knowledge_before ~ style,
+  data = filter(sos, style == "standard" | style == "reinforcement")
+)
+
+## Descriptives - new info
+
+new_info_tale <- sos %>%
+  group_by(style) %>%
+  summarise(
+    Mean = mean(new_info, na.rm = TRUE),
+    SD = sd(new_info, na.rm = TRUE),
+    Median = median(new_info, na.rm = TRUE),
+    SE = SD/sqrt(n()),
+    Upper = Mean + (1.96*SE),
+    Lower = Mean - (1.96*SE)
+  )
+
+### Direct v. Standard
+
+t_ni_DS <- t.test(
+  new_info ~ style,
+  data = filter(sos, style == "direct" | style == "standard")
+)
+
+### Direct v. Reinforcement
+
+t_ni_DR <- t.test(
+  new_info ~ style,
+  data = filter(sos, style == "direct" | style == "reinforcement")
+)
+
+### Standard vs. Reinforcement
+
+t_ni_RS <- t.test(
+  new_info ~ style,
+  data = filter(sos, style == "standard" | style == "reinforcement")
+)
+
+# Correlation performance x information disclosure -----------------------------
+
+##Overall
+
+corr_perf <- c("self_assessment",
+               "stage_1",
+               "stage_2",
+               "stage_3",
+               "stage_4",
+               "stage_5",
+               "stage_6")
+
+corr_perf_data <-sos[corr_perf]
+
+perf_corr_matrix <- corr_p_mat(corr_perf_data)
+
+## Direct
+
+corr_perf_direct <- sos %>% filter(style == "direct")
+
+corr_perf_direct <- corr_perf_direct[corr_perf]
+
+corr_perf_direct_matrix  <- corr_p_mat(corr_perf_direct)
+
+## Standard
+
+corr_perf_standard <- sos %>% filter(style == "standard")
+
+corr_perf_standard <- corr_perf_standard[corr_perf]
+
+corr_perf_standard_matrix <- corr_p_mat(corr_perf_standard)
+
+## Reinforcement
+
+corr_perf_reinforcement <- sos %>% filter(style == "reinforcement")
+
+corr_perf_reinforcement <- corr_perf_reinforcement[corr_perf]
+
+corr_perf_reinforcement_matrix <- corr_p_mat(corr_perf_reinforcement)
+
+
+# Exploratory analysis ---------------------------------------------------------
+
+## Predicting disclosed details by self_assessment
+
+### Main effect model
+
+expl_model_1 <- lmer(detail
+                     ~ time  
+                     + self_assessment
+                     + style
+                     + (1|crime_order:ID) 
+                     + (1|time),
+                     data = sos_long,
+                     REML = FALSE
+)
+
+summary(expl_model_1)
+
+### Interaction effect model
+
+expl_model_2 <- lmer(detail
+                     ~ time  
+                     + self_assessment
+                     + style
+                     + self_assessment*style
+                     + (1|crime_order:ID) 
+                     + (1|time),
+                     data = sos_long,
+                     REML = FALSE
+)
+
+summary(expl_model_2)
+
+comp_expl_model_anova <- anova(expl_model_1, expl_model_2)
+
 

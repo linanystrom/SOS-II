@@ -118,6 +118,8 @@ info_plot <- ggplot(sos_plot,
   ) +
   theme_classic()
 
+## With color
+
 info_plot_color <-
   ggplot(sos_plot,
          aes(
@@ -190,7 +192,7 @@ info_model_1 <- lmer(detail
 
 summary(info_model_1)
 
-### Interection effect model
+### Interaction effect model
 
 info_model_int <- lmer(detail
                        ~ time 
@@ -705,6 +707,25 @@ sum_desc <- sos %>%
     Lower = Mean - (1.96*SE)
   )
 
+sos$sum_crit <- rowSums(subset(sos, select = stage_5:stage_6))
+
+freq_table_phase_crit <- sos %>% 
+  group_by(style, sum_crit) %>%
+  summarise(n = n()) %>%
+  mutate(rel_freq = paste0(round(100 * n/sum(n), 0), "%")
+  )
+
+sum_crit_desc <- sos %>% 
+  group_by(style) %>% 
+  summarise(
+    Mean = mean(sum_crit, na.rm = TRUE),
+    SD = sd(sum_crit, na.rm = TRUE),
+    Median = median(sum_crit, na.rm = TRUE),
+    SE = SD/sqrt(n()),
+    Upper = Mean + (1.96*SE),
+    Lower = Mean - (1.96*SE)
+  )
+
 ## Effect size calculations, disclosed details, all phases
 
 ## Direct vs. Standard
@@ -793,4 +814,41 @@ crit_d_SR <- mes(
   n.1  = crit_desc[crit_desc$style == "reinforcement", ]$n,
   n.2  = crit_desc[crit_desc$style == "standard", ]$n
 )
+
+# Splines ----------------------------------------------------------------------
+
+### Main effect model
+
+info_spline_model_1 <- lmer(detail
+                     ~ start_slope  
+                     + end_slope
+                     + style
+                     + (1|crime_order/ID) 
+                     + (1|interviewer),
+                     data = sos_long,
+                     REML = FALSE
+)
+
+summary(info_spline_model_1)
+
+### Interaction effect model
+
+info_spline_model_int <- lmer(detail
+                       ~ start_slope  
+                       + end_slope
+                       + style 
+                       + start_slope*style 
+                       + end_slope*style 
+                       + (1|crime_order/ID) 
+                       + (1|interviewer), 
+                       data = sos_long,
+                       REML = FALSE
+)
+
+summary(info_spline_model_int)
+
+
+## Comparing regression models ANOVA
+
+comp_model_anova <- anova(info_model_1, info_model_int)
 
