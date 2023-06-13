@@ -1,0 +1,61 @@
+---
+title: "SoS Reinforcement - Supplemental report"
+date: "`r Sys.Date()`"
+output:
+  github_document:
+    toc: yes
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+source("./wrangle_sos.R")
+source("./analysis_sos.R")
+source("./supplemental_analysis_sos.R")
+
+```
+
+## Fixed effects models with alternate coding of stages
+
+In the models below we code stage 4 as the midpoint of the interview (all non critical stages) instead of point 3. These models do not change our interpretation of our intital results.
+
+### Main effect model
+
+```{r}
+summary(info_model_M4)
+```
+
+### Interaction effect model
+
+```{r}
+summary(info_model_M4_int)
+```
+
+### Model comparison 
+
+```{r}
+comp_model_anova
+```
+
+## Predicting perceived interview quality by disclosed details
+
+While the relationship between perceived interviewer quality and information disclosures differed across the conditions, perceived interview quality did not.
+
+### Main effect model
+
+```{r}
+summary(expl_model_5)
+```
+
+### Interaction effect model
+
+```{r}
+summary(expl_model_6)
+```
+
+### Model comparison
+
+```{r}
+comp_expl_model_anova_3
+```
+

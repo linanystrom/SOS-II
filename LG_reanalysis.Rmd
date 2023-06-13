@@ -1,0 +1,287 @@
+---
+title: "Reanalysis of Luke and Granhag (2022)"
+date: "`r Sys.Date()`"
+output:
+  github_document:
+    toc: yes
+---
+
+```{r, echo=FALSE, results = FALSE, message = FALSE, warning = FALSE}
+packages <- c(
+  "tidyverse", 
+  "readxl", 
+  "osfr",
+  "lme4",
+  "lmerTest")
+
+lapply(packages, library, character.only = TRUE)
+```
+
+
+```{r, echo=FALSE, results = FALSE, message = FALSE, warning = FALSE}
+# Load data --------------------------------------------------------------------
+
+# Luke and Granhag (2022)
+
+## Retrieve from OSF
+
+# The primary OSF repository for these studies can be found at
+# https://osf.io/mfus8/
+
+
+  
+if (!dir.exists("./data/")) {
+    
+    dir.create("./data/")
+    
+  }
+  
+
+if (!file.exists("./data/SoS_data_OSF.xlsx")) {
+  
+  osf_retrieve_file("https://osf.io/3ea49") %>% 
+    osf_download(
+      path = "./data/"
+    )
+  
+}
+
+luke_granhag_2022 <- read_xlsx("./data/SoS_data_OSF.xlsx") %>% type_convert()
+
+```
+
+```{r, echo=FALSE}
+# Wrangle data -----------------------------------------------------------------
+
+luke_granhag_2022 <- luke_granhag_2022 %>% 
+  mutate(
+    self_difficult_R = case_when(
+      self_difficult == 5 ~ 1, 
+      self_difficult == 4 ~ 2, 
+      self_difficult == 3 ~ 3, 
+      self_difficult == 2 ~ 4, 
+      self_difficult == 1 ~ 5 
+    ),
+    self_suspicious_R = case_when(
+      self_suspicious == 5 ~ 1, 
+      self_suspicious == 4 ~ 2, 
+      self_suspicious == 3 ~ 3, 
+      self_suspicious == 2 ~ 4, 
+      self_suspicious == 1 ~ 5 
+    ),
+    self_assessment = (self_confident 
+                       + self_difficult_R 
+                       + self_suspicious_R 
+                       + self_convincing)/4,
+    interview_difficult_R = case_when(
+      interview_difficult == 5 ~ 1, 
+      interview_difficult == 4 ~ 2, 
+      interview_difficult == 3 ~ 3, 
+      interview_difficult == 2 ~ 4, 
+      interview_difficult == 1 ~ 5 
+    ),
+    interview_awkward_R = case_when(
+      interview_awkward == 5 ~ 1, 
+      interview_awkward == 4 ~ 2, 
+      interview_awkward == 3 ~ 3, 
+      interview_awkward == 2 ~ 4, 
+      interview_awkward == 1 ~ 5 
+    ),
+    interview_qual = (interview_smooth 
+                      + interview_difficult_R 
+                      + interview_awkward_R 
+                      + interview_comfortable 
+                      + interview_open 
+                      + interview_pleasant)/6,
+    interviewer_challenging_R = case_when(
+      interviewer_challenging == 5 ~ 1, 
+      interviewer_challenging == 4 ~ 2, 
+      interviewer_challenging == 3 ~ 3, 
+      interviewer_challenging == 2 ~ 4, 
+      interviewer_challenging == 1 ~ 5 
+    ),
+    interviewer_aggressive_R = case_when(
+      interviewer_aggressive == 5 ~ 1, 
+      interviewer_aggressive == 4 ~ 2, 
+      interviewer_aggressive == 3 ~ 3, 
+      interviewer_aggressive == 2 ~ 4, 
+      interviewer_aggressive == 1 ~ 5 
+    ),
+    interviewer_rough_R = case_when(
+      interviewer_rough == 5 ~ 1, 
+      interviewer_rough == 4 ~ 2, 
+      interviewer_rough == 3 ~ 3, 
+      interviewer_rough == 2 ~ 4, 
+      interviewer_rough == 1 ~ 5 
+    ),
+    interviewer_qual = (interviewer_challenging_R 
+                        + interviewer_aggressive_R 
+                        + interviewer_rough_R 
+                        + interviewer_friendly 
+                        + interviewer_sympathetic 
+                        + interviewer_interested)/6
+  )
+
+luke_granhag_2022_long <- luke_granhag_2022 %>%
+  gather(key = "time", value = "info_disc", scoring_1, scoring_2, scoring_3)
+
+luke_granhag_2022_long$time <- factor(luke_granhag_2022_long$time,
+                                      levels = c("scoring_1",
+                                                 "scoring_2",
+                                                 "scoring_3"))
+
+contrasts(luke_granhag_2022_long$time) <- contr.poly(3)
+
+luke_granhag_2022_long$condition <- factor(luke_granhag_2022_long$condition,
+                                           levels = c("Direct",
+                                                      "Selective",
+                                                      "Reactive"))
+```
+
+# Reanalysis of Luke and Granhag (2022)
+
+In light of analyses performed in the current project "Advancing The Shift-Of-Strategy Approach: Shifting Suspects’ Strategies in Extended Interrogations" we wanted to perform the same analyses on the firt paper on the Shift-Of-Strategy approach to assess wether we find the same patterns here. 
+
+## Predicting disclosed details by self asessment of performance
+
+We found that the realtionship between self assessment of performance and disclosed details was reversed in the Direct and SoS conditions in the current experiement. We found a negative relationship between disclosed details and self assessed performance for the Direct condition, and a positive relationship betweent he variables in both SoS conditions. 
+
+Below we perform the same analyses on the data from Luke and Granhag (2022). The interaction effect model exhibits better fit with data and we observe the same relationship between self assessment of performance and information disclosure as we found in the current experiment.
+
+### Main effect model
+
+```{r, warning = FALSE, echo=FALSE}
+
+self_main_lg <- lmer(info_disc
+                     ~ self_assessment
+                     + condition
+                     + (1|crime_order/ID)
+                     + (1|interviewer),
+                     data = luke_granhag_2022_long,
+                     REML = FALSE
+)
+
+summary(self_main_lg)
+
+```
+
+### Interaction effect model
+
+```{r, warning = FALSE, echo=FALSE}
+
+self_int_lg  <- lmer(info_disc
+                     ~ self_assessment
+                     + condition
+                     + self_assessment*condition
+                     + (1|crime_order/ID)
+                     + (1|interviewer),
+                     data = luke_granhag_2022_long,
+                     REML = FALSE,
+                     control = lmerControl(
+                       optCtrl = list(maxfun = 100000),
+                       optimizer = "bobyqa"))
+
+summary(self_int_lg)
+
+```
+
+### Comparing model fit
+
+```{r, echo=FALSE}
+comp_self_lg_anova <- anova(self_main_lg, self_int_lg)
+
+comp_self_lg_anova
+```
+
+## Predicting perceived interviewer quality by disclosed details
+
+In the current experiment we found that the relationship between disclosed details and perceived interviewer quality was stronger (positive) in the SoS-Reinforcement condition than the remaining conditions. Luke and Granhag (2022) did not include a condition that's equivalent to SoS-Reinforcement, why can't explicitly compare the patterns over the two experiments. However, the Direct and Reactive conditions in Luke and Granhag (2022) used the same style of questioning as our Direct and SoS-Standard conditions. The relationship between the variables should be similar in both conditions and weakly positive to be consistent with the analyses from the current experiment. Instead, we find significant differences between the conditions. In direct we observe a slightly negative relationship between disclosing details and interviewer perception. This relationship is reversed in Reactive. 
+
+We can only speculate to why we don't observe the same patterns in both experiments. It is possible that these results stem form the length of the interviews were Luke & Granhag (2022) utilized procedures that resulted in relatively brief interviews and the current experiment used longer interviews.
+
+Participants being interviewed with a style consistent to Direct might have different experiences depending on the length of the interview. In brief interviews, participant's disclosing little, to no information might have a relatively positive experiences as they are not confronted with evidence, are asked a limited amount of questions and are quickly let go. These participants might feel like they are easily "getting away" with saying nothing without being pressed or challenges by the interviewer. When interviewed for a longer time, participants will still not be confronted with evidence, but they will be asked more questions which may cause participants have a less positive experience when being withholding as they might feel they are not easily "getting away" with disclosing no information as the interviewer keeps asking questions. 
+
+### Main effect model
+
+```{r, warning = FALSE, echo=FALSE}
+
+intr_main_lg <- lmer(info_disc
+                     ~ interviewer_qual
+                     + condition
+                     + (1|crime_order/ID)
+                     + (1|interviewer),
+                     data = luke_granhag_2022_long,
+                     REML = FALSE
+)
+
+summary(intr_main_lg)
+
+```
+
+### Interaction effect model
+
+```{r, warning = FALSE, echo=FALSE}
+intr_int_lg <- lmer(info_disc
+                     ~ interviewer_qual
+                     + condition
+                     + interviewer_qual*condition
+                     + (1|crime_order/ID)
+                     + (1|interviewer),
+                     data = luke_granhag_2022_long,
+                     REML = FALSE
+)
+
+summary(intr_int_lg)
+```
+
+### Comparing model fit
+
+```{r, echo=FALSE}
+comp_intr_lg_anova <- anova(intr_main_lg, intr_int_lg)
+
+comp_intr_lg_anova
+```
+
+## Predicting perceived interview qulity på disclosed details
+
+In the current experiment we found no significant differences between the relationship between disclosed details and interview quality for the different conditions. Similar to interviewer quality, we observe significant patterns in the Luke and Granhag (2022) data. Again, we can only speculate but the different patterns in the different experiments may stem from the varying lenghts of the interviews. 
+
+### Main effect model
+
+```{r, warning = FALSE, echo=FALSE}
+intq_main_lg <- lmer(info_disc
+                     ~ interview_qual
+                     + condition
+                     + (1|crime_order/ID)
+                     + (1|interviewer),
+                     data = luke_granhag_2022_long,
+                     REML = FALSE
+)
+
+summary(intq_main_lg)
+```
+
+### Interaction effect model
+
+```{r, warning = FALSE, echo=FALSE}
+intq_int_lg <- lmer(info_disc
+                     ~ interview_qual
+                     + condition
+                     + interview_qual*condition
+                     + (1|crime_order/ID)
+                     + (1|interviewer),
+                     data = luke_granhag_2022_long,
+                     REML = FALSE
+)
+
+summary(intq_int_lg)
+```
+
+### Comparing model fit
+
+```{r, echo=FALSE}
+comp_intq_lg_anova <- anova(intq_main_lg, intq_int_lg)
+
+comp_intq_lg_anova
+```
+

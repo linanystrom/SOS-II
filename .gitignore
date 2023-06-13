@@ -3,8 +3,6 @@
 .RData
 .Ruserdata
 *.png
-*.csv
 *.pdf
-*.xlsx
 *.log
 *.tiff

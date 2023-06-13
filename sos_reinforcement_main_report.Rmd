@@ -1,0 +1,427 @@
+---
+title: "SoS Reinforcement - Main report"
+date: "`r Sys.Date()`"
+output:
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+source("./wrangle_sos.R")
+source("./corr_mat_p.r")
+source("./icc_func.r")
+source("./analysis_sos.R")
+source("./plot_sos.R")
+source("./supplemental_analysis_sos.R")
+source("./SoS-2_interrater-analysis.R")
+```
+
+# Demographics
+
+## Age
+
+```{r}
+age_table
+```
+
+## Gender
+
+1 = Woman
+2 = Men
+3 = 4 non-binary/third gender
+
+```{r}
+gender_table
+```
+
+# Motivation & Engagement
+
+To check make sure our participants we're interacting with our experimental materials we measured how engaged they were while watching the video clips depicting the mock crimes and how motivated they were to convince the interviewer that they were innocent. Each item was measured with a 7-point Likert-scale.
+
+### Engagement
+
+```{r}
+engagement
+```
+
+### Motivation
+
+```{r}
+motivation
+```
+
+# Disclosed details
+
+Our primary goal was assessing the different interviewing approaches' ability to elicit information from participants. We used a predetermined coding scheme to assess information disclosure where scores ranged from 0-5 points for each stage of the interview. Two independent raters coded all 300 interview transcripts. Agreement between raters was high. Descriptive statistics and plots covering information disclosure for each of the conditions; Direct, SoS-Standard & SoS-Reinforcement, can be found below. Descriptive statistics for information disclosure are presented below as well as a figure displaying information disclosure in each of the six stages for all interview conditions.
+
+## ICC
+
+```{r}
+disclosure_boot_icc
+```
+
+```{r}
+disclosure_ci_icc
+```
+
+## Descriptives
+
+### All information (Stage 1-5)
+
+```{r}
+info_desc
+```
+
+```{r}
+grid_detail
+```
+
+```{r}
+info_plot
+```
+
+### Critical information (Stage 5 & 6)
+
+```{r}
+crit_desc
+```
+
+## Interrupted time series linear mixed effects models
+
+To assess whether the two SoS approaches elicited more critical information from participants than those in the direct condition we conducted linear mixed effects regression analyses. Our models contained splines reflecting that the SoS-Reinforcement intervention was implemented at the midpoint of the interview. The model included a spline for before the intervention was implemented (stage 1-3), one spline assessing any immediate effect of the intervention (stage 4), and a final spline assessing the the effect of the intervention on the final three stages of the interview (stage 4-6). We began with a model only containing main effects and followed up with a model containing interaction effects. Finally, we compared the fit of the two models. As can be seen below, adding the interactions significantly improved the fit with the data, so the interaction model was retained.
+
+Both the interaction terms for interview stage and interview technique (Standard & Reinforcement) were significant and positive, indicating that participants in the Standard and Reinforcement condition disclosed more information over time than participants in the Direct condition. The interaction terms for stages after midpoint and interview technique (Standard & Reinforcement) were significant and negative. These results suggest that the drop in disclosed information following the midpoint was more severe in the SoS-Standard and SoS-Reinforcement conditions. We did not observe any immediate effect on disclosure of evidence from the Reinforcement phase. Taken together, our results support our prediction that the Standard and Reinforcement conditions generate greater information disclosure overall as well as during the critical stages, but Reinforcement did not outperform Standard in terms of information disclosure.
+
+### Main effect model
+
+```{r}
+summary(info_model_1)
+```
+
+### Interaction effect model
+
+```{r}
+summary(info_model_int)
+```
+
+### Comparing main and interaction model fit
+
+```{r}
+comp_model_anova
+```
+
+### Comparing disclosure of critical details, Direct vs. Standard
+
+```{r}
+crit_d_DS
+```
+
+### Comparing disclosure of critical details, Direct vs. Reinforcement
+
+```{r}
+crit_d_DR
+```
+
+### Comparing disclosure of critical details, Standard vs. Reinforcement
+
+```{r}
+crit_d_SR
+```
+
+## Self-reports of changing strategy
+
+We asked our participants to indicate whether they had changed strategy during the interview. Participants in the SoS conditions reported changing strategy during the interview more frequently than participants in the Direct condition.
+
+### Desriptives
+
+```{r}
+change_strat
+```
+
+### Chi-square, Direct vs. Standard
+
+```{r}
+DS_prop_test
+```
+
+### Chi-square, Direct vs. Reinforcement
+
+```{r}
+DR_prop_test
+```
+
+### Chi-square, Standard vs. Reinforcement
+
+```{r}
+SR_prop_test
+```
+
+# Self-assessment of performance
+
+We asked the participants how successful they thought they had been in convincing the interviewer that they were innocent after the interview was completed using three Likert-type questions using a 5-point scale.Participants in the Direct condition rated their performance as significantly better than those in the Standard condition and Reinforcement condition. There was no significant difference between participants' self-assessments in the Standard condition and the Reinforcement condition, nor was there evidence of equivalence between these conditions. Participants in each of the three conditions assessed their performance as significantly lower than the midpoint of the scale.
+
+## Reliability
+
+```{r}
+reliability(self_uni_fit)
+```
+
+## Descriptive statistics
+
+```{r}
+perf_desc
+```
+
+## Pairwise comparisons
+
+### Direct vs. Standard
+
+```{r}
+t_self_DS
+```
+
+### Direct vs. Reinforcement
+
+```{r}
+t_self_DR
+```
+
+### Standard vs. Reinforcement
+
+```{r}
+t_self_RS
+```
+
+## TOST
+
+### Standard vs. Reinforcement
+
+```{r}
+tost_self_RS
+```
+
+## Comparison to the midpoint
+
+### Direct
+
+```{r}
+t_self_mid_D
+```
+
+### Standard
+
+```{r}
+t_self_mid_S
+```
+
+### Reinforcement
+
+```{r}
+t_self_mid_R
+```
+
+
+# The relationship between self-assessment of performance and disclosed details for each condition (Exploratory)
+
+We conducted exploratory analyses investigating the relationship between the participants’ self-assessment of performance and disclosed details. Models predicting information disclosure included fixed effects for interview stage, self-assessment of performance and interview technique (Direct, Standard, and Reinforcement), coded with Direct as the reference group and random intercepts for participants (nested in mock crime sequences) as well as for the interview stages and interviewers. Models were fit using maximum likelihood estimation. The model selection process began with a model with only main effects for interview stage, self-assessment of performance and interview technique. We compared the initial model to one that added the interaction term for self-assessment and interview technique. Adding the interactions significantly improved the fit with the data. Both the interaction terms for self-assessment of performance and interview technique (Standard & Reinforcement) were significant and positive. The opposite relationship was found regarding the Direct condition. Here we found a negative correlation between self-assessment of performance and disclosed details.
+
+## Main effects model
+
+```{r}
+summary(expl_model_1)
+```
+
+## Interaction effects model
+
+```{r}
+summary(expl_model_2)
+```
+
+## Comparison of model fit
+
+```{r}
+comp_expl_model_anova 
+```
+
+## Plot 
+
+Scatter plot displaying the relationship between self-assessed performance and disclosed details for each of the interviewing techniques.
+
+```{r}
+expl_plot_wo_legend
+```
+
+# The relationship between interviewer perception and disclosed details for each condition (Exploratory)
+
+We conducted exploratory analyses investigating the relationship between the participants’ perceptions of the interviewer and disclosed details. Models predicting information disclosure included fixed effects for interviewer perception and interview technique (Direct, Standard, and Reinforcement), coded with Direct as the reference group and random intercepts for participants (nested in mock crime sequences) as well as for the interview stages and interviewers. Models were fit using maximum likelihood estimation. The model selection process began with a model with only main effects. We compared the initial model to one that added the interaction term for interviewer perception and interview technique. Adding the interactions significantly improved the fit with the data. The interaction term for perception of the interviewer and SoS-Reinforcement was significant and positive.
+
+## Main effect model
+
+```{r}
+summary(expl_model_3)
+```
+
+## Interaction effect model
+
+```{r}
+summary(expl_model_4)
+```
+
+## Comparison of model fit
+
+```{r}
+comp_expl_model_anova_2
+```
+
+## Plot 
+
+Scatter plot displaying the relationship between perceptions of the interviewer and disclosed details for each of the interviewing techniques.
+
+```{r}
+expl_plot_2_wo_legend
+```
+
+
+# Interview Quality
+
+In line with our predictions regarding both interview quality and interviewer perception, participants' ratings in all conditions were significantly above the negative endpoint of the scale, suggesting positive or neutral perceptions of the interaction and of the interviewer. Contrary to our predictions, participants in the Reinforcement conditions rated the interview quality and interviewer perception as significantly lower than participants in the Direct condition. There was no significant difference between participants' perceived interview quality nor interviewer perception between the Reinforcement and Standard condition, and between the Standard and Direct condition. There was no evidence of equivalence between the conditions either.
+
+## Reliability
+
+```{r}
+reliability(interviewQ_fit)
+```
+
+## Descriptice statistics
+
+```{r}
+interview_desc
+```
+
+## Comparison to negative endpoint
+
+### Direct
+
+```{r}
+t_interview_neg_D
+```
+
+### Standard
+
+```{r}
+t_interview_neg_S
+```
+
+### Reinforcement
+
+```{r}
+t_interview_neg_R
+```
+
+## Pairwise comparisons
+
+### Directs vs. Standard
+
+```{r}
+t_inteview_DS
+```
+
+### Direct vs. Reinforcement
+
+```{r}
+t_inteview_DR
+```
+
+### Standard vs. Reinforcement
+
+```{r}
+t_inteview_RS
+```
+
+## TOST
+
+### Direct vs. Standard
+
+```{r}
+tost_interview_DS
+```
+
+### Standard vs. Reinforcement
+
+```{r}
+tost_interview_RS
+```
+
+# Interviewer Perception
+
+## Reliability
+
+```{r}
+reliability(interviewerP_fit)
+```
+
+## Descriptives
+
+```{r}
+interviewer_desc
+```
+
+## Comparison to the negative endpoint
+
+### Direct
+
+```{r}
+t_interviewer_neg_D
+```
+
+### Standard
+
+```{r}
+t_interviewer_neg_S
+```
+
+### Reinforcement
+
+```{r}
+t_interviewer_neg_R
+```
+
+## Pairwise comparisons
+
+### Directs vs. Standard
+
+```{r}
+t_interviewer_DS
+```
+
+### Direct vs. Reinforcement
+
+```{r}
+t_interviewer_DR
+```
+
+### Standard vs. Reinforcement
+
+```{r}
+t_interviewer_RS
+```
+
+## TOST
+
+### Direct vs. Standard
+
+```{r}
+tost_interviewer_DS
+```
+
+### Standard vs. Reinforcement
+```{r}
+tost_interviewer_RS
+```
+
+```{r}
+self_grid
+```
+
