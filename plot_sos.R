@@ -16,33 +16,33 @@ lapply(packages, library, character.only = TRUE)
 sos_long_full <- read.csv("./data/sos_long.csv")
 sos_long      <- sos_long_full %>% filter(!exclusion %in% c('1'))
 
-#Prepare data ------------------------------------------------------------------
+# Prepare data -----------------------------------------------------------------
 
-sos_freq <- sos_plot
+sos_freq <- sos_long
 
-sos_plot <- sos_long %>% 
+sos_freq <- sos_freq %>% 
   mutate(
     style  = case_when(
       style == "direct"        ~ "Direct",
-      style == "reinforcement" ~ "Reinforcement",
-      style == "standard"      ~ "Standard"
+      style == "reinforcement" ~ "SoS-Reinforcement",
+      style == "standard"      ~ "SoS-Standard"
     )
   )
 
 
-sos_plot$style <- ordered(
-  sos_plot$style, levels = c("Direct","Standard","Reinforcement")
+sos_freq$style <- ordered(
+  sos_freq$style, levels = c("Direct","SoS-Standard","SoS-Reinforcement")
 )
 
 
-sos_plot$time <- factor(
-  sos_plot$time,
-  levels = c("1", "2", "3", "4", "5", "6"),
-  labels = c("Phase 1", "Phase 2", "Phase 3", "Phase 4", "Phase 5","Phase 6")
+sos_freq$time <- factor(
+  sos_freq$time,
+  levels = c("0", "1", "2", "3", "4", "5"),
+  labels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5","Stage 6")
 )
 
 
-#Information disclosure by condition and phase, complete grid ------------------
+# Information disclosure by condition and phase, complete grid -----------------
 
 grid_detail <- ggplot(sos_freq,
        aes(
@@ -65,7 +65,7 @@ grid_detail <- ggplot(sos_freq,
   ) +
   theme_classic()
 
-#Self-assessment, by style -----------------------------------------------------
+# Self-assessment, by style ----------------------------------------------------
 
 perf_plot <- ggplot(sos_freq,
     aes(
@@ -83,7 +83,7 @@ perf_plot <- ggplot(sos_freq,
   ) +
   theme_classic()
 
-#Interview quality, by style ---------------------------------------------------
+# Interview quality, by style --------------------------------------------------
 
 interview_plot <- ggplot(sos_freq,
     aes(
@@ -101,7 +101,7 @@ interview_plot <- ggplot(sos_freq,
   ) +
   theme_classic()
 
-#Interviewer perception, by style ----------------------------------------------
+# Interviewer perception, by style ---------------------------------------------
 
 interviewer_plot <- ggplot(sos_freq,
                            aes(
@@ -124,5 +124,5 @@ interviewer_plot <- ggplot(sos_freq,
 
 # Combining self assessment, interview quality & interviewer perception plots --
 
-slef_grid <- plot_grid(perf_plot, interview_plot, interviewer_plot, ncol = 1)
+self_grid <- plot_grid(perf_plot, interview_plot, interviewer_plot, ncol = 1)
 

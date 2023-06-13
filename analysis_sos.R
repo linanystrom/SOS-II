@@ -41,14 +41,14 @@ sos_plot <- sos_long %>%
     time_jitter   = time   + jitter_x,
     style         = case_when(
       style == "direct"        ~ "Direct",
-      style == "reinforcement" ~ "Reinforcement",
-      style == "standard"      ~ "Standard"
+      style == "reinforcement" ~ "SoS-Reinforcement",
+      style == "standard"      ~ "SoS-Standard"
     )
   )
 
 
 sos_plot$style <- ordered(
-  sos_plot$style, levels = c("Direct","Standard","Reinforcement")
+  sos_plot$style, levels = c("Direct","SoS-Standard","SoS-Reinforcement")
   )
 
 
@@ -71,7 +71,8 @@ info_desc <- sos_plot %>%
 info_plot <- ggplot(sos_plot,
        aes(
          x = time_jitter,
-         y = detail_jitter
+         y = detail_jitter,
+         colour = factor(style)
        )) +
   facet_wrap(. ~ style) +
   geom_line(
@@ -90,7 +91,6 @@ info_plot <- ggplot(sos_plot,
       y = Mean,
       group = style
     ),
-    color = "red",
     size = 1.5
   ) +
   geom_errorbar(
@@ -99,24 +99,31 @@ info_plot <- ggplot(sos_plot,
       x = time,
       ymax = Upper,
       ymin = Lower,
-      group = style
+      group = style,
+      color = factor(style)
     ),
     inherit.aes = FALSE,
-    color = "red",
     width = .25
+  ) +
+  scale_color_manual(values = c("#7DAF9C",
+                                "#DB94B2",
+                                "#EA8C55")
   ) +
   labs(
     y = "Information disclosure",
-    x = "Phase"
+    x = "Stage",
+    color = "Condition"
   ) +
   scale_x_continuous(
     labels = c("1", "2", "3","4","5","6"),
-    breaks = 1:6
+    breaks = 0:5
   ) +
   coord_cartesian(
     ylim = c(0, 5)
   ) +
   theme_classic()
+
+info_plot <- info_plot + theme(legend.position = "none")
 
 ## With color
 
@@ -143,7 +150,7 @@ info_plot_color <-
       y = Mean,
       group = style
     ),
-    color = "red",
+    color = "#CA3F7E",
     size = 1.5
   ) +
   geom_errorbar(
@@ -155,16 +162,16 @@ info_plot_color <-
       group = style
     ),
     inherit.aes = FALSE,
-    color = "red",
+    color = "#CA3F7E",
     width = .25
   ) +
   labs(
     y = "Information disclosure",
-    x = "Phase"
+    x = "Activity"
   ) +
   scale_x_continuous(
     labels = c("1", "2", "3","4","5","6"),
-    breaks = 1:6
+    breaks = 0:5
   ) +
   coord_cartesian(
     ylim = c(0, 5)
@@ -658,7 +665,7 @@ sos_freq <- sos_plot
 
 sos_freq$time <- factor(
   sos_plot$time,
-  levels = c("1", "2", "3", "4", "5", "6"),
+  levels = c("0", "1", "2", "3", "4", "5"),
   labels = c("Phase 1", "Phase 2", "Phase 3", "Phase 4", "Phase 5","Phase 6")
   )
                         
@@ -704,10 +711,12 @@ sum_desc <- sos %>%
     Median = median(sum_info, na.rm = TRUE),
     SE = SD/sqrt(n()),
     Upper = Mean + (1.96*SE),
-    Lower = Mean - (1.96*SE)
+    Lower = Mean - (1.96*SE),
+    n = n()
   )
 
 sos$sum_crit <- rowSums(subset(sos, select = stage_5:stage_6))
+
 
 freq_table_phase_crit <- sos %>% 
   group_by(style, sum_crit) %>%
@@ -731,42 +740,38 @@ sum_crit_desc <- sos %>%
 ## Direct vs. Standard
 
 sum_d_DS <- mes(
-  m.1  = crit_desc[sum_desc$style == "standard", ]$Mean,
-  m.2  = crit_desc[sum_desc$style == "direct", ]$Mean,
-  sd.1 = crit_desc[sum_desc$style == "standard", ]$SD,
-  sd.2 = crit_desc[sum_desc$style == "direct", ]$SD,
-  n.1  = crit_desc[sum_desc$style == "standard", ]$n,
-  n.2  = crit_desc[sum_desc$style == "direct", ]$n
+  m.1  = sum_desc[sum_desc$style == "standard", ]$Mean,
+  m.2  = sum_desc[sum_desc$style == "direct", ]$Mean,
+  sd.1 = sum_desc[sum_desc$style == "standard", ]$SD,
+  sd.2 = sum_desc[sum_desc$style == "direct", ]$SD,
+  n.1  = sum_desc[sum_desc$style == "standard", ]$n,
+  n.2  = sum_desc[sum_desc$style == "direct", ]$n
 )
 
 ## Direct vs. Reinforcement
 
 sum_d_DR <- mes(
-  m.1  = crit_desc[sum_desc$style == "reinforcement", ]$Mean,
-  m.2  = crit_desc[sum_desc$style == "direct", ]$Mean,
-  sd.1 = crit_desc[sum_desc$style == "reinforcement", ]$SD,
-  sd.2 = crit_desc[sum_desc$style == "direct", ]$SD,
-  n.1  = crit_desc[sum_desc$style == "reinforcement", ]$n,
-  n.2  = crit_desc[sum_desc$style == "direct", ]$n
+  m.1  = sum_desc[sum_desc$style == "reinforcement", ]$Mean,
+  m.2  = sum_desc[sum_desc$style == "direct", ]$Mean,
+  sd.1 = sum_desc[sum_desc$style == "reinforcement", ]$SD,
+  sd.2 = sum_desc[sum_desc$style == "direct", ]$SD,
+  n.1  = sum_desc[sum_desc$style == "reinforcement", ]$n,
+  n.2  = sum_desc[sum_desc$style == "direct", ]$n
 )
 
 ## Standard vs. Reinforcement
 
 sum_d_SR <- mes(
-  m.1  = crit_desc[sum_desc$style == "reinforcement", ]$Mean,
-  m.2  = crit_desc[sum_desc$style == "standard", ]$Mean,
-  sd.1 = crit_desc[sum_desc$style == "reinforcement", ]$SD,
-  sd.2 = crit_desc[sum_desc$style == "standard", ]$SD,
-  n.1  = crit_desc[sum_desc$style == "reinforcement", ]$n,
-  n.2  = crit_desc[sum_desc$style == "standard", ]$n
+  m.1  = sum_desc[sum_desc$style == "reinforcement", ]$Mean,
+  m.2  = sum_desc[sum_desc$style == "standard", ]$Mean,
+  sd.1 = sum_desc[sum_desc$style == "reinforcement", ]$SD,
+  sd.2 = sum_desc[sum_desc$style == "standard", ]$SD,
+  n.1  = sum_desc[sum_desc$style == "reinforcement", ]$n,
+  n.2  = sum_desc[sum_desc$style == "standard", ]$n
 )
 
 
 ## Effect size calculations, disclosed details, critical phases
-
-### Creating variable for sum of details disclosed in all critical phases (5-6)
-
-sos$sum_crit <- rowSums(subset(sos, select = stage_5:stage_6))
 
 ## Descriptives
 
@@ -851,4 +856,18 @@ summary(info_spline_model_int)
 ## Comparing regression models ANOVA
 
 comp_model_anova <- anova(info_model_1, info_model_int)
+
+# Export data ------------------------------------------------------------------
+
+write.csv(
+  sos,
+  "./data/sos_v.2.csv",
+  row.names = FALSE
+)
+
+write.csv(
+  sos_long,
+  "./data/sos_long_v.2.csv",
+  row.names = FALSE
+)
 

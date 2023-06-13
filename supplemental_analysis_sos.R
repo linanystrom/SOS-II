@@ -5,9 +5,11 @@
 ################################################################################
 
 # Basic setup ------------------------------------------------------------------
+
 packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr",
               "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest", "compute.es",
-              "psych", "wesanderson", "corrplot", "ggpubr", "lavaan", "semTools")
+              "psych", "wesanderson", "corrplot", "ggpubr", "lavaan", "semTools",
+              "ggpubr")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -18,8 +20,8 @@ source("corr_mat_p.r")
 sos_full      <- read.csv("./data/sos_wrangle.csv")
 sos_long_full <- read.csv("./data/sos_long.csv")
 
-sos           <- sos_full %>% filter(!exclusion %in% c('1'))
-sos_long      <- sos_long_full %>% filter(!exclusion %in% c('1')) 
+sos           <- read.csv("./data/sos_v.2.csv")
+sos_long      <- read.csv("./data/sos_long_v.2.csv")
 
 # Running linear mixed effects model, where phase 4 is coded as midpoint -------
 
@@ -85,7 +87,7 @@ summary(info_model_M4_int)
 comp_model_anova <- anova(info_model_M4, info_model_M4_int)
 
 
-#Correlation, Disclosed details Phase 4 with Phase 5&6 ------------------------- 
+#Correlation, Disclosed details Phase 4 with Phase 5 & 6 ----------------------- 
 
 
 #Self-Report of Changing Strategy-----------------------------------------------
@@ -769,11 +771,11 @@ corr_perf_reinforcement_matrix <- corr_p_mat(corr_perf_reinforcement)
 ### Main effect model
 
 expl_model_1 <- lmer(detail
-                     ~ time  
-                     + self_assessment
+                     ~ self_assessment
                      + style
-                     + (1|crime_order:ID) 
-                     + (1|time),
+                     + (1|crime_order/ID) 
+                     + (1|time)
+                     + (1|interviewer),
                      data = sos_long,
                      REML = FALSE
 )
@@ -783,12 +785,12 @@ summary(expl_model_1)
 ### Interaction effect model
 
 expl_model_2 <- lmer(detail
-                     ~ time  
-                     + self_assessment
+                     ~ self_assessment
                      + style
                      + self_assessment*style
-                     + (1|crime_order:ID) 
-                     + (1|time),
+                     + (1|crime_order/ID) 
+                     + (1|time)
+                     + (1|interviewer),
                      data = sos_long,
                      REML = FALSE
 )
@@ -797,4 +799,153 @@ summary(expl_model_2)
 
 comp_expl_model_anova <- anova(expl_model_1, expl_model_2)
 
+## Scatter plot relationship between performance and disclosed details.
+
+sos_expl <- sos %>% mutate(
+  detail_sum = select(., stage_1:stage_6) %>% apply(1, sum, na.rm=TRUE),
+  style         = case_when(
+    style == "direct"        ~ "Direct",
+    style == "reinforcement" ~ "SoS-Reinforcement",
+    style == "standard"      ~ "SoS-Standard"
+  ))
+
+sos_expl$style <- ordered(
+  sos_expl$style, levels = c("Direct","SoS-Standard","SoS-Reinforcement")
+)
+
+expl_plot <- ggplot(sos_expl,
+                    aes(
+                      x = detail_sum,
+                      y = self_assessment,
+                      colour = factor(style)
+                    )) +
+  facet_wrap(. ~ style) +
+  geom_point(size = 1.5) +
+  geom_smooth(method='lm',
+              size = 1.5) +
+  labs(
+      x = "Sum details",
+      y = "Self assessment of Performance"
+  ) +
+  scale_color_manual(values = c("#7DAF9C",
+                                "#DB94B2",
+                                "#EA8C55")
+  ) +
+  theme_classic()
+
+expl_plot_wo_legend <- expl_plot + theme(legend.position = "none")
+
+
+## Predicting perceived interviewer quality by disclosed details (Exploratory)
+
+### Main effect model
+
+expl_model_3 <- lmer(detail
+                     ~ interviewer_qual
+                     + style
+                     + (1|crime_order/ID)
+                     + (1|time)
+                     + (1|interviewer),
+                     data = sos_long,
+                     REML = FALSE,
+                     control = lmerControl(
+                       optCtrl = list(maxfun = 100000),
+                       optimizer = "bobyqa"
+                     )
+)
+
+summary(expl_model_3)
+
+### Interaction effect model
+
+expl_model_4 <- lmer(detail
+                     ~ interviewer_qual
+                     + style
+                     + interviewer_qual*style
+                     + (1|crime_order/ID)
+                     + (1|time)
+                     + (1|interviewer),
+                     data = sos_long,
+                     REML = FALSE,
+                     control = lmerControl(
+                       optCtrl = list(maxfun = 100000),
+                       optimizer = "bobyqa"
+                     )
+)
+
+summary(expl_model_4)
+
+comp_expl_model_anova_2 <- anova(expl_model_3, expl_model_4)
+
+
+## Plot interviewer
+
+## Scatter plot relationship between interviewer quality and disclosed details.
+
+sos_expl_2 <- sos %>% mutate(
+  detail_sum = select(., stage_1:stage_6) %>% apply(1, sum, na.rm=TRUE),
+  style         = case_when(
+    style == "direct"        ~ "Direct",
+    style == "reinforcement" ~ "SoS-Reinforcement",
+    style == "standard"      ~ "SoS-Standard"
+  ))
+
+sos_expl_2$style <- factor(
+  sos_expl_2$style, levels = c("Direct","SoS-Standard","SoS-Reinforcement")
+)
+
+expl_plot_2 <- ggplot(sos_expl_2,
+                    aes(
+                      x = detail_sum,
+                      y = interviewer_qual,
+                      colour = factor(style)
+                    )) +
+  facet_wrap(. ~ style) +
+  geom_point(size = 1.5) +
+  geom_smooth(method='lm',
+              size = 1.5) +
+  labs(
+    x = "Sum details",
+    y = "Interviewer perception"
+  ) +
+  scale_color_manual(values = c("#7DAF9C",
+                                "#DB94B2",
+                                "#EA8C55")
+  ) +
+  theme_classic()
+
+expl_plot_2_wo_legend <- expl_plot_2 + theme(legend.position = "none")
+
+## Predicting perceived interviewer quality by disclosed details (Exploratory)
+
+### Main effect model
+
+expl_model_5 <- lmer(detail
+                     ~ interview_qual
+                     + style
+                     + (1|crime_order/ID)
+                     + (1|time)
+                     + (1|interviewer),
+                     data = sos_long,
+                     REML = FALSE
+                     )
+
+summary(expl_model_5)
+
+### Interaction effect model
+
+expl_model_6 <- lmer(detail
+                     ~ interview_qual
+                     + style
+                     + interview_qual*style
+                     + (1|crime_order/ID)
+                     + (1|time)
+                     + (1|interviewer),
+                     data = sos_long,
+                     REML = FALSE
+)
+
+summary(expl_model_6)
+
+comp_expl_model_anova_3 <- anova(expl_model_5, expl_model_6)
 

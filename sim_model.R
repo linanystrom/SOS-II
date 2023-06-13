@@ -1,3 +1,11 @@
+################################################################################
+
+# SoS Reinforcement - Power simulation
+
+################################################################################
+
+# Basic setup ------------------------------------------------------------------
+
 packages <- c("gtools", "readr", "tibble", "dplyr", "data.table", "tidyr",
               "readxl", "ggplot2", "lme4", "TOSTER", "lmerTest", "compute.es",
               "simr")

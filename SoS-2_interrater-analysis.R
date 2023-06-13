@@ -4,10 +4,11 @@
 
 ################################################################################
 
+# Basic setup ------------------------------------------------------------------
 
-library(tidyverse)
-library(readxl)
-library(lme4)
+packages <- c("readxl", "lme4", "boot")
+
+lapply(packages, library, character.only = TRUE)
 
 source("icc_func.r")
 set.seed(666)
