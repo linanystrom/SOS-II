@@ -1,6 +1,6 @@
 # Advancing The Shift-Of-Strategy Approach: Shifting Suspects’ Strategies in Extended Interrogations
 
-This repository contains the analysis code for the second study on the Shift-Of-Strategy (SoS) Approach. The project's pre-registration and supplemental materials can be found at https://osf.io/a9462/.
+This repository contains the analysis code for the second study on the Shift-Of-Strategy (SoS) Approach. The project's pre-registration and supplemental materials can be found at https://osf.io/a9462/. A preprint is available at https://psyarxiv.com/b7mvq.
 
 ## Reproducing the analyses
 
