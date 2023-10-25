@@ -1,6 +1,6 @@
 SoS Reinforcement - Main report
 ================
-2023-06-13
+2023-10-25
 
 - <a href="#demographics" id="toc-demographics">Demographics</a>
   - <a href="#age" id="toc-age">Age</a>
@@ -180,8 +180,12 @@ with a 7-point Likert-scale.
 
 ### Motivation
 
-    ##       Mean       SD Median         SE    Upper   Lower
-    ## 1 5.946128 1.195626      6 0.06902947 6.081426 5.81083
+    ## # A tibble: 3 × 7
+    ##   style          Mean    SD Median    SE Upper Lower
+    ##   <chr>         <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>
+    ## 1 direct         5.95  1.26      6 0.126  6.20  5.70
+    ## 2 reinforcement  5.75  1.28      6 0.128  6.00  5.50
+    ## 3 standard       6.14  1.00      6 0.100  6.34  5.95
 
 # Disclosed details
 

@@ -1,6 +1,6 @@
 SoS Reinforcement - Supplemental report
 ================
-2023-06-13
+2023-10-25
 
 - <a href="#fixed-effects-models-with-alternate-coding-of-stages"
   id="toc-fixed-effects-models-with-alternate-coding-of-stages">Fixed
@@ -20,12 +20,33 @@ SoS Reinforcement - Supplemental report
     id="toc-interaction-effect-model-1">Interaction effect model</a>
   - <a href="#model-comparison-1" id="toc-model-comparison-1">Model
     comparison</a>
+- <a href="#assessing-training-effects"
+  id="toc-assessing-training-effects">Assessing Training effects</a>
+  - <a href="#main-effect-model-2" id="toc-main-effect-model-2">Main effect
+    model</a>
+  - <a href="#interaction-effect-model-2"
+    id="toc-interaction-effect-model-2">Interaction effect model</a>
+  - <a href="#model-comparison-2" id="toc-model-comparison-2">Model
+    comparison</a>
+- <a href="#comparing-interviewers"
+  id="toc-comparing-interviewers">Comparing interviewers</a>
+  - <a href="#m-vs-p" id="toc-m-vs-p">M vs. P</a>
+  - <a href="#m-vs-k" id="toc-m-vs-k">M vs. K</a>
+  - <a href="#p-vs-k" id="toc-p-vs-k">P vs. K</a>
+- <a href="#duration-of-interview" id="toc-duration-of-interview">Duration
+  of interview</a>
+  - <a href="#main-effect-model-3" id="toc-main-effect-model-3">Main effect
+    model</a>
+  - <a href="#interaction-effect-model-3"
+    id="toc-interaction-effect-model-3">Interaction effect model</a>
+  - <a href="#model-comparison-3" id="toc-model-comparison-3">Model
+    comparison</a>
 
 ## Fixed effects models with alternate coding of stages
 
 In the models below we code stage 4 as the midpoint of the interview
 (all non critical stages) instead of point 3. These models do not change
-our interpretation of our intital results.
+our interpretation of our int ital results.
 
 ### Main effect model
 
@@ -258,3 +279,238 @@ interview quality did not.
     ##              npar    AIC    BIC  logLik deviance  Chisq Df Pr(>Chisq)
     ## expl_model_5    9 6449.0 6498.4 -3215.5   6431.0                     
     ## expl_model_6   11 6449.9 6510.2 -3214.0   6427.9 3.1424  2     0.2078
+
+## Assessing Training effects
+
+### Main effect model
+
+    ## 
+    ## Call:
+    ## lm(formula = sum_info ~ ID + interviewer, data = sos)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -15.6272  -7.3570   0.1949   7.0915  16.7945 
+    ## 
+    ## Coefficients:
+    ##                  Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)      15.79198    1.29730  12.173   <2e-16 ***
+    ## ID               -0.01268    0.00571  -2.220   0.0272 *  
+    ## interviewerMalin -1.14847    1.21689  -0.944   0.3461    
+    ## interviewerPär   -1.13425    1.23187  -0.921   0.3579    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 8.561 on 296 degrees of freedom
+    ## Multiple R-squared:  0.0192, Adjusted R-squared:  0.009261 
+    ## F-statistic: 1.932 on 3 and 296 DF,  p-value: 0.1245
+
+### Interaction effect model
+
+    ## 
+    ## Call:
+    ## lm(formula = sum_info ~ ID + interviewer + ID * interviewer, 
+    ##     data = sos)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -14.7143  -6.8807   0.4853   6.8651  16.4031 
+    ## 
+    ## Coefficients:
+    ##                      Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)         13.833841   1.974939   7.005 1.69e-11 ***
+    ## ID                  -0.001161   0.010460  -0.111   0.9117    
+    ## interviewerMalin     0.228000   2.719022   0.084   0.9332    
+    ## interviewerPär       2.413382   2.461041   0.981   0.3276    
+    ## ID:interviewerMalin -0.008068   0.014362  -0.562   0.5747    
+    ## ID:interviewerPär   -0.023968   0.014064  -1.704   0.0894 .  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 8.546 on 294 degrees of freedom
+    ## Multiple R-squared:  0.0294, Adjusted R-squared:  0.01289 
+    ## F-statistic: 1.781 on 5 and 294 DF,  p-value: 0.1166
+
+### Model comparison
+
+    ## Analysis of Variance Table
+    ## 
+    ## Model 1: sum_info ~ ID + interviewer
+    ## Model 2: sum_info ~ ID + interviewer + ID * interviewer
+    ##   Res.Df   RSS Df Sum of Sq      F Pr(>F)
+    ## 1    296 21696                           
+    ## 2    294 21471  2     225.6 1.5446 0.2151
+
+## Comparing interviewers
+
+    ## # A tibble: 9 × 5
+    ## # Groups:   style [3]
+    ##   style         interviewer  Mean    SD Median
+    ##   <chr>         <chr>       <dbl> <dbl>  <dbl>
+    ## 1 direct        Kaan         3.67 0.608   3.5 
+    ## 2 direct        Malin        3.43 0.612   3.5 
+    ## 3 direct        Pär          3.62 0.496   3.67
+    ## 4 reinforcement Kaan         3.69 0.498   3.67
+    ## 5 reinforcement Malin        3.21 0.660   3.17
+    ## 6 reinforcement Pär          3.31 0.593   3.33
+    ## 7 standard      Kaan         3.51 0.606   3.67
+    ## 8 standard      Malin        3.22 0.561   3.33
+    ## 9 standard      Pär          3.63 0.437   3.67
+
+### M vs. P
+
+    ## 
+    ##  Welch Two Sample t-test
+    ## 
+    ## data:  interviewer_qual by interviewer
+    ## t = -2.8319, df = 189.57, p-value = 0.005127
+    ## alternative hypothesis: true difference in means between group Malin and group Pär is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.39181419 -0.07008191
+    ## sample estimates:
+    ## mean in group Malin   mean in group Pär 
+    ##            3.288660            3.519608
+
+### M vs. K
+
+    ## 
+    ##  Welch Two Sample t-test
+    ## 
+    ## data:  interviewer_qual by interviewer
+    ## t = 3.9419, df = 191.72, p-value = 0.0001132
+    ## alternative hypothesis: true difference in means between group Kaan and group Malin is not equal to 0
+    ## 95 percent confidence interval:
+    ##  0.1676187 0.5033610
+    ## sample estimates:
+    ##  mean in group Kaan mean in group Malin 
+    ##             3.62415             3.28866
+
+### P vs. K
+
+    ## 
+    ##  Welch Two Sample t-test
+    ## 
+    ## data:  interviewer_qual by interviewer
+    ## t = 1.3389, df = 195.3, p-value = 0.1822
+    ## alternative hypothesis: true difference in means between group Kaan and group Pär is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.04944778  0.25853142
+    ## sample estimates:
+    ## mean in group Kaan  mean in group Pär 
+    ##           3.624150           3.519608
+
+## Duration of interview
+
+    ## # A tibble: 3 × 7
+    ##   style          Mean    SD Median    SE Upper Lower
+    ##   <chr>         <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl>
+    ## 1 direct         10.4  5.22   9.98 0.522  11.5  9.42
+    ## 2 reinforcement  18.0  6.72  17.1  0.672  19.3 16.7 
+    ## 3 standard       13.9  5.10  13.7  0.510  14.9 12.9
+
+### Main effect model
+
+    ## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+    ##   method [lmerModLmerTest]
+    ## Formula: detail ~ minutes + style + (1 | crime_order/ID) + (1 | time) +  
+    ##     (1 | interviewer)
+    ##    Data: sos_time_long
+    ## 
+    ##      AIC      BIC   logLik deviance df.resid 
+    ##   6454.2   6503.6  -3218.1   6436.2     1791 
+    ## 
+    ## Scaled residuals: 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.97942 -0.57948 -0.02538  0.57765  3.15111 
+    ## 
+    ## Random effects:
+    ##  Groups         Name        Variance Std.Dev.
+    ##  ID:crime_order (Intercept) 1.10616  1.0517  
+    ##  crime_order    (Intercept) 0.02867  0.1693  
+    ##  time           (Intercept) 0.11267  0.3357  
+    ##  interviewer    (Intercept) 0.00000  0.0000  
+    ##  Residual                   1.56888  1.2525  
+    ## Number of obs: 1800, groups:  
+    ## ID:crime_order, 300; crime_order, 6; time, 6; interviewer, 3
+    ## 
+    ## Fixed effects:
+    ##                     Estimate Std. Error        df t value Pr(>|t|)    
+    ## (Intercept)          0.30091    0.22927  32.08022   1.312  0.19868    
+    ## minutes              0.11581    0.01189 296.42298   9.743  < 2e-16 ***
+    ## stylereinforcement   0.17331    0.18958 299.13588   0.914  0.36137    
+    ## stylestandard        0.54465    0.17179 299.32919   3.170  0.00168 ** 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
+    ##             (Intr) minuts stylrn
+    ## minutes     -0.538              
+    ## stylrnfrcmn -0.059 -0.481       
+    ## stylestndrd -0.218 -0.247  0.542
+    ## optimizer (nloptwrap) convergence code: 0 (OK)
+    ## boundary (singular) fit: see help('isSingular')
+
+### Interaction effect model
+
+    ## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+    ##   method [lmerModLmerTest]
+    ## Formula: detail ~ minutes + style + minutes * style + (1 | crime_order/ID) +  
+    ##     (1 | time) + (1 | interviewer)
+    ##    Data: sos_time_long
+    ## 
+    ##      AIC      BIC   logLik deviance df.resid 
+    ##   6446.3   6506.8  -3212.2   6424.3     1789 
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -2.9643 -0.5906 -0.0207  0.5873  3.1658 
+    ## 
+    ## Random effects:
+    ##  Groups         Name        Variance Std.Dev.
+    ##  ID:crime_order (Intercept) 1.05357  1.0264  
+    ##  crime_order    (Intercept) 0.02685  0.1638  
+    ##  time           (Intercept) 0.11241  0.3353  
+    ##  interviewer    (Intercept) 0.00000  0.0000  
+    ##  Residual                   1.56887  1.2525  
+    ## Number of obs: 1800, groups:  
+    ## ID:crime_order, 300; crime_order, 6; time, 6; interviewer, 3
+    ## 
+    ## Fixed effects:
+    ##                              Estimate Std. Error         df t value Pr(>|t|)
+    ## (Intercept)                 -0.116507   0.300065  83.922945  -0.388  0.69880
+    ## minutes                      0.156143   0.022240 299.030235   7.021 1.49e-11
+    ## stylereinforcement           1.386981   0.422543 299.524825   3.282  0.00115
+    ## stylestandard                0.466135   0.424133 297.059461   1.099  0.27264
+    ## minutes:stylereinforcement  -0.084488   0.028294 299.257489  -2.986  0.00306
+    ## minutes:stylestandard       -0.005023   0.031682 295.993388  -0.159  0.87414
+    ##                               
+    ## (Intercept)                   
+    ## minutes                    ***
+    ## stylereinforcement         ** 
+    ## stylestandard                 
+    ## minutes:stylereinforcement ** 
+    ## minutes:stylestandard         
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
+    ##             (Intr) minuts stylrn stylst mnts:stylr
+    ## minutes     -0.771                                
+    ## stylrnfrcmn -0.533  0.556                         
+    ## stylestndrd -0.522  0.538  0.371                  
+    ## mnts:stylrn  0.611 -0.793 -0.890 -0.423           
+    ## mnts:stylst  0.539 -0.696 -0.387 -0.913  0.550    
+    ## optimizer (nloptwrap) convergence code: 0 (OK)
+    ## boundary (singular) fit: see help('isSingular')
+
+### Model comparison
+
+    ## Data: sos_time_long
+    ## Models:
+    ## dur_model_1: detail ~ minutes + style + (1 | crime_order/ID) + (1 | time) + (1 | interviewer)
+    ## dur_model_2: detail ~ minutes + style + minutes * style + (1 | crime_order/ID) + (1 | time) + (1 | interviewer)
+    ##             npar    AIC    BIC  logLik deviance Chisq Df Pr(>Chisq)   
+    ## dur_model_1    9 6454.2 6503.6 -3218.1   6436.2                       
+    ## dur_model_2   11 6446.3 6506.8 -3212.2   6424.3 11.83  2   0.002698 **
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
