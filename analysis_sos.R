@@ -111,7 +111,7 @@ info_plot <- ggplot(sos_plot,
   ) +
   labs(
     y = "Information disclosure",
-    x = "Stage",
+    x = "Activity",
     color = "Condition"
   ) +
   scale_x_continuous(
@@ -528,6 +528,30 @@ interviewer_desc <- sos %>%
     SD = sd(interviewer_qual, na.rm = TRUE),
     Median = median(interviewer_qual, na.rm = TRUE)
   ) 
+
+interviewer_desc_2 <- sos %>%
+  group_by(style, interviewer) %>%
+  summarise(
+    Mean = mean(interviewer_qual, na.rm = TRUE),
+    SD = sd(interviewer_qual, na.rm = TRUE),
+    Median = median(interviewer_qual, na.rm = TRUE)
+  ) 
+
+t_interviewer_MP <- t.test(
+  interviewer_qual ~ interviewer,
+  data = filter(sos, interviewer == "Malin" | interviewer == "Pär")
+)
+
+t_interviewer_MK <- t.test(
+  interviewer_qual ~ interviewer,
+  data = filter(sos, interviewer == "Malin" | interviewer == "Kaan")
+)
+
+t_interviewer_PK <- t.test(
+  interviewer_qual ~ interviewer,
+  data = filter(sos, interviewer == "Pär" | interviewer == "Kaan")
+)
+
 
 
 ## Plot

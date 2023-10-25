@@ -23,6 +23,8 @@ sos_long_full <- read.csv("./data/sos_long.csv")
 sos           <- read.csv("./data/sos_v.2.csv")
 sos_long      <- read.csv("./data/sos_long_v.2.csv")
 
+sos$sum_crit <- rowSums(subset(sos, select = stage_5:stage_6))
+
 # Running linear mixed effects model, where phase 4 is coded as midpoint -------
 
 # Setting Phase 4 as midpoint---------------------------------------------------
@@ -185,6 +187,7 @@ freq_crit_plot <- ggplot(sos,
 ## Descriptives 
 
 motivation <- sos %>% 
+  group_by(style) %>% 
   summarise(
     Mean = mean(motivation, na.rm = TRUE),
     SD = sd(motivation, na.rm = TRUE),
@@ -193,6 +196,60 @@ motivation <- sos %>%
     Upper = Mean + (1.96*SE),
     Lower = Mean - (1.96*SE)
   )
+
+## Direct vs. Standard
+
+t_mot_DS <- t.test(
+  motivation ~ style,
+  data = filter(sos, style == "direct" | style == "standard")
+)
+
+## Direct vs. Reinforcement
+
+t_mot_DR <- t.test(
+  motivation ~ style,
+  data = filter(sos, style == "direct" | style == "reinforcement")
+)
+
+## Standard vs. Reinforcement
+
+t_mot_SR <- t.test(
+  motivation ~ style,
+  data = filter(sos, style == "standard" | style == "reinforcement")
+)
+
+## Predicting disclosed details by motivation
+
+### Main effect model
+
+mot_model_1 <- lmer(detail
+                     ~ motivation
+                     + style
+                     + (1|crime_order/ID) 
+                     + (1|time)
+                     + (1|interviewer),
+                     data = sos_long,
+                     REML = FALSE
+)
+
+summary(mot_model_1)
+
+### Interaction effect model
+
+mot_model_2 <- lmer(detail
+                     ~ motivation
+                     + style
+                     + motivation*style
+                     + (1|crime_order/ID) 
+                     + (1|time)
+                     + (1|interviewer),
+                     data = sos_long,
+                     REML = FALSE
+)
+
+summary(mot_model_2)
+
+comp_mot_model_anova <- anova(mot_model_1, mot_model_2)
 
 # Engagement with clips---------------------------------------------------------
 
@@ -208,6 +265,59 @@ engagement <- sos %>%
     Lower = Mean - (1.96*SE)
   )
 
+## Direct vs. Standard
+
+t_eng_DS <- t.test(
+  engagement ~ style,
+  data = filter(sos, style == "direct" | style == "standard")
+)
+
+## Direct vs. Reinforcement
+
+t_eng_DR <- t.test(
+  engagement ~ style,
+  data = filter(sos, style == "direct" | style == "reinforcement")
+)
+
+## Standard vs. Reinforcement
+
+t_eng_SR <- t.test(
+  engagement ~ style,
+  data = filter(sos, style == "standard" | style == "reinforcement")
+)
+
+## Predicting disclosed details by engagement
+
+### Main effect model
+
+eng_model_1 <- lmer(detail
+                    ~ engagement
+                    + style
+                    + (1|crime_order/ID) 
+                    + (1|time)
+                    + (1|interviewer),
+                    data = sos_long,
+                    REML = FALSE
+)
+
+summary(eng_model_1)
+
+### Interaction effect model
+
+eng_model_2 <- lmer(detail
+                    ~ engagement
+                    + style
+                    + engagement*style
+                    + (1|crime_order/ID) 
+                    + (1|time)
+                    + (1|interviewer),
+                    data = sos_long,
+                    REML = FALSE
+)
+
+summary(eng_model_2)
+
+comp_mot_model_anova <- anova(eng_model_1, eng_model_2)
 
 # Omega estimates of composite measures-----------------------------------------
 
@@ -906,7 +1016,7 @@ expl_plot_2 <- ggplot(sos_expl_2,
               size = 1.5) +
   labs(
     x = "Sum details",
-    y = "Interviewer perception"
+    y = "Perceptions of Interviewer"
   ) +
   scale_color_manual(values = c("#7DAF9C",
                                 "#DB94B2",
@@ -948,4 +1058,105 @@ expl_model_6 <- lmer(detail
 summary(expl_model_6)
 
 comp_expl_model_anova_3 <- anova(expl_model_5, expl_model_6)
+
+## Assessing training effects
+
+### Main effect model
+
+training_model_1 <- lm(sum_info
+                    ~ ID
+                    + interviewer,
+                    data = sos
+)
+
+summary(training_model_1)
+
+
+training_model_2 <- lm(sum_info
+                       ~ ID
+                       + interviewer
+                       + ID*interviewer,
+                       data = sos
+)
+
+summary(training_model_2)
+
+training_anova <- anova(training_model_1, training_model_2)
+
+## Duration --------------------------------------------------------------------
+
+sos_duration <- read.csv("./duration.csv")
+sos_time <- merge(sos, sos_duration, by = "ID")
+sos_time_long <- merge(sos_long, sos_duration, by = "ID")
+
+
+duration_desc <- sos_time %>% 
+  group_by(style) %>% 
+  summarise(
+    Mean = mean(minutes, na.rm = TRUE),
+    SD = sd(minutes, na.rm = TRUE),
+    Median = median(minutes, na.rm = TRUE),
+    SE = SD/sqrt(n()),
+    Upper = Mean + (1.96*SE),
+    Lower = Mean - (1.96*SE)
+  )
+
+## Non-critical
+
+dur_model_1 <- lmer(detail
+                    ~ minutes
+                    + style
+                    + (1|crime_order/ID) 
+                    + (1|time)
+                    + (1|interviewer),
+                    data = sos_time_long,
+                    REML = FALSE
+)
+
+summary(dur_model_1)
+
+dur_model_2 <- lmer(detail
+                    ~ minutes
+                    + style
+                    + minutes*style
+                    + (1|crime_order/ID) 
+                    + (1|time)
+                    + (1|interviewer),
+                    data = sos_time_long,
+                    REML = FALSE
+)
+
+summary(dur_model_2)
+
+## Comparing regression models ANOVA
+
+dur_model_anova <- anova(dur_model_1, dur_model_2)
+
+## Critical
+
+dur_model_3 <- lmer(sum_crit
+                    ~ minutes
+                    + style
+                    + (1|interviewer),
+                    data = sos_time,
+                    REML = FALSE
+)
+
+summary(dur_model_3)
+
+dur_model_4 <- lmer(sum_crit
+                    ~ minutes
+                    + style
+                    + minutes*style
+                    + (1|interviewer),
+                    data = sos_time,
+                    REML = FALSE
+)
+
+summary(dur_model_4)
+
+## Comparing regression models ANOVA
+
+dur_model_anova_crit <- anova(dur_model_3, dur_model_4)
+
 

@@ -17,7 +17,7 @@ source("./supplemental_analysis_sos.R")
 
 ## Fixed effects models with alternate coding of stages
 
-In the models below we code stage 4 as the midpoint of the interview (all non critical stages) instead of point 3. These models do not change our interpretation of our intital results.
+In the models below we code stage 4 as the midpoint of the interview (all non critical stages) instead of point 3. These models do not change our interpretation of our int ital results.
 
 ### Main effect model
 
@@ -57,5 +57,67 @@ summary(expl_model_6)
 
 ```{r}
 comp_expl_model_anova_3
+```
+
+## Assessing Training effects
+
+### Main effect model
+```{r}
+summary(training_model_1)
+```
+
+### Interaction effect model
+```{r}
+summary(training_model_2)
+```
+
+### Model comparison
+```{r}
+training_anova
+```
+
+## Comparing interviewers
+
+```{r}
+interviewer_desc_2
+```
+
+### M vs. P
+```{r}
+t_interviewer_MP
+```
+
+### M vs. K
+```{r}
+t_interviewer_MK
+```
+
+### P vs. K
+```{r}
+t_interviewer_PK
+```
+
+## Duration of interview
+
+```{r}
+duration_desc
+```
+
+### Main effect model
+
+```{r}
+summary(dur_model_1)
+```
+
+### Interaction effect model
+
+```{r}
+summary(dur_model_2)
+```
+
+### Model comparison
+
+```{r}
+dur_model_anova
 ```
 

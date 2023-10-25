@@ -196,3 +196,51 @@ reinforcement_icc <- ICC_func(reinforcement_model)
 reinforcement_boot_icc <- bootMer(reinforcement_model, ICC_func, nsim = 1000)
 
 reinforcement_ci_icc <- boot.ci(reinforcement_boot_icc, index = 1, type = "perc")
+
+# Total disagreement -----------------------------------------------------------
+
+L_vec <- L_long$disclosure 
+
+K_vec <- K_long$disclosure 
+
+M_vec <- M_long$disclosure 
+
+P_vec <- P_long$disclosure 
+
+# P & L comp
+
+L_vec_1 <- L_vec[1:1014]
+
+disagreement_PL <- sum((L_vec_1 - P_vec) != 0)
+
+
+# K & L comp
+
+L_vec_2 <- L_vec[1015:1188] #ID: 204
+
+K_vec_1 <- K_vec[1:174] #ID: 204
+
+disagreement_KL <- sum((L_vec_2 - K_vec_1) != 0)
+
+# M & L comp
+
+L_vec_3 <- L_vec[1189:1356] #ID: 232
+
+M_vec_1 <- M_vec[7:174]
+
+disagreement_ML <- sum((L_vec_3 - M_vec_1) != 0)
+
+# M & K comp
+
+K_vec_2 <- K_vec[175:618] #ID: 308
+
+M_vec_2 <- M_vec[175:618]
+
+disagreement_KM <- sum((K_vec_2 - M_vec_2) != 0, na.rm = TRUE)
+
+# Total
+
+total_disagreement <- disagreement_PL+ disagreement_KL + disagreement_ML + disagreement_KM + 2 # added 2 for M's NAs
+
+perc_disagreement <- total_disagreement/1800
+

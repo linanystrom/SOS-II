@@ -38,7 +38,7 @@ sos_freq$style <- ordered(
 sos_freq$time <- factor(
   sos_freq$time,
   levels = c("0", "1", "2", "3", "4", "5"),
-  labels = c("Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5","Stage 6")
+  labels = c("Activity 1", "Activity 2", "Activity 3", "Activity 4", "Activity 5","Activity 6")
 )
 
 
@@ -112,7 +112,7 @@ interviewer_plot <- ggplot(sos_freq,
   ) +
   labs (
     y = "Count",
-    x = "Interviewer perception"
+    x = "Perceptions of Interviewer"
   ) +
   facet_wrap(. ~ style) +
   geom_histogram(
