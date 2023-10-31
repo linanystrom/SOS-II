@@ -1,6 +1,6 @@
 SoS Reinforcement - Supplemental report
 ================
-2023-10-25
+2023-10-31
 
 - <a href="#fixed-effects-models-with-alternate-coding-of-stages"
   id="toc-fixed-effects-models-with-alternate-coding-of-stages">Fixed

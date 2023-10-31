@@ -1,6 +1,6 @@
 SoS Reinforcement - Main report
 ================
-2023-10-25
+2023-10-31
 
 - <a href="#demographics" id="toc-demographics">Demographics</a>
   - <a href="#age" id="toc-age">Age</a>
@@ -729,104 +729,109 @@ self-assessment of performance and disclosed details.
 
     ## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
     ##   method [lmerModLmerTest]
-    ## Formula: detail ~ self_assessment + style + (1 | crime_order/ID) + (1 |  
-    ##     time) + (1 | interviewer)
+    ## Formula: detail ~ time + self_assessment + style + (1 | crime_order/ID) +  
+    ##     (1 | time) + (1 | interviewer)
     ##    Data: sos_long
     ## 
     ##      AIC      BIC   logLik deviance df.resid 
-    ##   6469.0   6518.3  -3225.5   6451.0     1773 
+    ##   6469.2   6524.0  -3224.6   6449.2     1772 
     ## 
     ## Scaled residuals: 
     ##     Min      1Q  Median      3Q     Max 
-    ## -3.0294 -0.5966 -0.0236  0.5939  3.1722 
+    ## -3.0283 -0.5955 -0.0208  0.5884  3.1732 
+    ## 
+    ## Random effects:
+    ##  Groups         Name        Variance  Std.Dev. 
+    ##  ID:crime_order (Intercept) 1.508e+00 1.2279621
+    ##  crime_order    (Intercept) 5.014e-02 0.2239207
+    ##  time           (Intercept) 8.401e-02 0.2898451
+    ##  interviewer    (Intercept) 2.481e-08 0.0001575
+    ##  Residual                   1.571e+00 1.2532019
+    ## Number of obs: 1782, groups:  
+    ## ID:crime_order, 297; crime_order, 6; time, 6; interviewer, 3
+    ## 
+    ## Fixed effects:
+    ##                     Estimate Std. Error        df t value Pr(>|t|)    
+    ## (Intercept)          1.51158    0.36111  38.16130   4.186 0.000161 ***
+    ## time                -0.10284    0.07143   5.76237  -1.440 0.202003    
+    ## self_assessment      0.08785    0.08680 292.28073   1.012 0.312333    
+    ## stylereinforcement   1.10122    0.19239 295.15704   5.724 2.56e-08 ***
+    ## stylestandard        1.01196    0.19422 295.55006   5.210 3.54e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
+    ##             (Intr) time   slf_ss stylrn
+    ## time        -0.495                     
+    ## slf_ssssmnt -0.669  0.000              
+    ## stylrnfrcmn -0.378  0.000  0.180       
+    ## stylestndrd -0.376  0.000  0.180  0.510
+
+## Interaction effects model
+
+    ## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+    ##   method [lmerModLmerTest]
+    ## Formula: detail ~ time + self_assessment + style + self_assessment * style +  
+    ##     (1 | crime_order/ID) + (1 | time) + (1 | interviewer)
+    ##    Data: sos_long
+    ## 
+    ##      AIC      BIC   logLik deviance df.resid 
+    ##   6462.1   6527.9  -3219.0   6438.1     1770 
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -3.0348 -0.5883 -0.0241  0.5851  3.2093 
     ## 
     ## Random effects:
     ##  Groups         Name        Variance Std.Dev.
-    ##  ID:crime_order (Intercept) 1.50788  1.2280  
-    ##  crime_order    (Intercept) 0.05132  0.2265  
-    ##  time           (Intercept) 0.11594  0.3405  
+    ##  ID:crime_order (Intercept) 1.44173  1.2007  
+    ##  crime_order    (Intercept) 0.05149  0.2269  
+    ##  time           (Intercept) 0.08400  0.2898  
     ##  interviewer    (Intercept) 0.00000  0.0000  
     ##  Residual                   1.57051  1.2532  
     ## Number of obs: 1782, groups:  
     ## ID:crime_order, 297; crime_order, 6; time, 6; interviewer, 3
     ## 
     ## Fixed effects:
-    ##                    Estimate Std. Error       df t value Pr(>|t|)    
-    ## (Intercept)          1.2540     0.3225  82.5710   3.888 0.000204 ***
-    ## self_assessment      0.0879     0.0868 292.2636   1.013 0.312020    
-    ## stylereinforcement   1.1017     0.1924 295.1011   5.726 2.53e-08 ***
-    ## stylestandard        1.0125     0.1942 295.4889   5.213 3.50e-07 ***
+    ##                                     Estimate Std. Error        df t value
+    ## (Intercept)                          2.56314    0.47600  97.49467   5.385
+    ## time                                -0.10284    0.07143   5.76330  -1.440
+    ## self_assessment                     -0.29094    0.14158 293.60406  -2.055
+    ## stylereinforcement                  -0.53521    0.56470 293.21077  -0.948
+    ## stylestandard                       -0.47919    0.56603 294.23855  -0.847
+    ## self_assessment:stylereinforcement   0.62324    0.20676 293.16347   3.014
+    ## self_assessment:stylestandard        0.56465    0.20744 293.46932   2.722
+    ##                                    Pr(>|t|)    
+    ## (Intercept)                        5.02e-07 ***
+    ## time                                0.20197    
+    ## self_assessment                     0.04077 *  
+    ## stylereinforcement                  0.34403    
+    ## stylestandard                       0.39791    
+    ## self_assessment:stylereinforcement  0.00280 ** 
+    ## self_assessment:stylestandard       0.00688 ** 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Correlation of Fixed Effects:
-    ##             (Intr) slf_ss stylrn
-    ## slf_ssssmnt -0.749              
-    ## stylrnfrcmn -0.423  0.180       
-    ## stylestndrd -0.421  0.180  0.510
+    ##                   (Intr) time   slf_ss stylrn stylst slf_ssssmnt:stylr
+    ## time              -0.375                                              
+    ## slf_ssssmnt       -0.827  0.000                                       
+    ## stylrnfrcmn       -0.640  0.000  0.698                                
+    ## stylestndrd       -0.640  0.000  0.695  0.536                         
+    ## slf_ssssmnt:stylr  0.565  0.000 -0.685 -0.942 -0.472                  
+    ## slf_ssssmnt:styls  0.566  0.000 -0.683 -0.476 -0.941  0.466           
     ## optimizer (nloptwrap) convergence code: 0 (OK)
     ## boundary (singular) fit: see help('isSingular')
-
-## Interaction effects model
-
-    ## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
-    ##   method [lmerModLmerTest]
-    ## Formula: detail ~ self_assessment + style + self_assessment * style +  
-    ##     (1 | crime_order/ID) + (1 | time) + (1 | interviewer)
-    ##    Data: sos_long
-    ## 
-    ##      AIC      BIC   logLik deviance df.resid 
-    ##   6461.9   6522.2  -3219.9   6439.9     1771 
-    ## 
-    ## Scaled residuals: 
-    ##     Min      1Q  Median      3Q     Max 
-    ## -3.0360 -0.5903 -0.0261  0.5894  3.2083 
-    ## 
-    ## Random effects:
-    ##  Groups         Name        Variance  Std.Dev. 
-    ##  ID:crime_order (Intercept) 1.442e+00 1.2007079
-    ##  crime_order    (Intercept) 5.272e-02 0.2295976
-    ##  time           (Intercept) 1.159e-01 0.3404948
-    ##  interviewer    (Intercept) 5.688e-08 0.0002385
-    ##  Residual                   1.571e+00 1.2532011
-    ## Number of obs: 1782, groups:  
-    ## ID:crime_order, 297; crime_order, 6; time, 6; interviewer, 3
-    ## 
-    ## Fixed effects:
-    ##                                    Estimate Std. Error       df t value
-    ## (Intercept)                          2.3056     0.4475 189.1179   5.153
-    ## self_assessment                     -0.2909     0.1416 293.5717  -2.054
-    ## stylereinforcement                  -0.5353     0.5647 293.1852  -0.948
-    ## stylestandard                       -0.4781     0.5660 294.1985  -0.845
-    ## self_assessment:stylereinforcement   0.6235     0.2068 293.1385   3.015
-    ## self_assessment:stylestandard        0.5644     0.2074 293.4399   2.721
-    ##                                    Pr(>|t|)    
-    ## (Intercept)                        6.43e-07 ***
-    ## self_assessment                     0.04081 *  
-    ## stylereinforcement                  0.34394    
-    ## stylestandard                       0.39905    
-    ## self_assessment:stylereinforcement  0.00279 ** 
-    ## self_assessment:stylestandard       0.00690 ** 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Correlation of Fixed Effects:
-    ##                   (Intr) slf_ss stylrn stylst slf_ssssmnt:stylr
-    ## slf_ssssmnt       -0.880                                       
-    ## stylrnfrcmn       -0.681  0.698                                
-    ## stylestndrd       -0.680  0.695  0.536                         
-    ## slf_ssssmnt:stylr  0.601 -0.685 -0.942 -0.472                  
-    ## slf_ssssmnt:styls  0.602 -0.683 -0.476 -0.941  0.466
 
 ## Comparison of model fit
 
     ## Data: sos_long
     ## Models:
-    ## expl_model_1: detail ~ self_assessment + style + (1 | crime_order/ID) + (1 | time) + (1 | interviewer)
-    ## expl_model_2: detail ~ self_assessment + style + self_assessment * style + (1 | crime_order/ID) + (1 | time) + (1 | interviewer)
+    ## expl_model_1: detail ~ time + self_assessment + style + (1 | crime_order/ID) + (1 | time) + (1 | interviewer)
+    ## expl_model_2: detail ~ time + self_assessment + style + self_assessment * style + (1 | crime_order/ID) + (1 | time) + (1 | interviewer)
     ##              npar    AIC    BIC  logLik deviance  Chisq Df Pr(>Chisq)   
-    ## expl_model_1    9 6469.0 6518.3 -3225.5   6451.0                        
-    ## expl_model_2   11 6461.9 6522.2 -3219.9   6439.9 11.089  2    0.00391 **
+    ## expl_model_1   10 6469.2 6524.0 -3224.6   6449.2                        
+    ## expl_model_2   12 6462.1 6527.9 -3219.0   6438.1 11.089  2    0.00391 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 

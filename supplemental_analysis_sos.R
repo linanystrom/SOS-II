@@ -881,7 +881,8 @@ corr_perf_reinforcement_matrix <- corr_p_mat(corr_perf_reinforcement)
 ### Main effect model
 
 expl_model_1 <- lmer(detail
-                     ~ self_assessment
+                     ~ time
+                     + self_assessment
                      + style
                      + (1|crime_order/ID) 
                      + (1|time)
@@ -895,7 +896,8 @@ summary(expl_model_1)
 ### Interaction effect model
 
 expl_model_2 <- lmer(detail
-                     ~ self_assessment
+                     ~ time
+                     + self_assessment
                      + style
                      + self_assessment*style
                      + (1|crime_order/ID) 
